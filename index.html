@@ -8,18 +8,18 @@
     <style>
         :root {
             --unilag-green: #004d40;
+            --unilag-green-mid: #00695c;
             --unilag-gold: #c9a227;
             --unilag-light: #e8f5e9;
             --text-dark: #1a1a1a;
             --text-muted: #666;
             --bg-warm: #faf8f5;
+            --border: #e8e8e8;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -28,34 +28,33 @@
             line-height: 1.6;
         }
 
-        /* Navigation */
+        /* ── Navigation ── */
         nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.5rem 5%;
-            background: rgba(255, 255, 255, 0.95);
+            padding: 1.25rem 5%;
+            background: rgba(255,255,255,0.97);
             backdrop-filter: blur(10px);
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 1000;
-            border-bottom: 1px solid rgba(0, 77, 64, 0.1);
+            border-bottom: 1px solid rgba(0,77,64,0.1);
+            transition: box-shadow 0.3s;
         }
+
+        nav.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
 
         .logo {
             font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: var(--unilag-green);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-        }
-
-        .logo::before {
-            content: "🎓";
-            font-size: 1.2rem;
+            gap: 0.4rem;
+            text-decoration: none;
         }
 
         .nav-links {
@@ -69,13 +68,63 @@
             color: var(--text-dark);
             font-weight: 500;
             font-size: 0.9rem;
-            transition: color 0.3s;
+            transition: color 0.2s;
         }
 
-        .nav-links a:hover {
-            color: var(--unilag-green);
+        .nav-links a:hover { color: var(--unilag-green); }
+
+        /* Hamburger */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 4px;
+            background: none;
+            border: none;
         }
 
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--text-dark);
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 66px;
+            left: 0;
+            width: 100%;
+            background: white;
+            padding: 1.5rem 5%;
+            border-bottom: 1px solid var(--border);
+            z-index: 999;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .mobile-menu.open { display: flex; }
+
+        .mobile-menu a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 1.05rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .mobile-menu a:last-child { border-bottom: none; }
+
+        /* ── Buttons ── */
         .btn-primary {
             background: var(--unilag-green);
             color: white;
@@ -83,46 +132,64 @@
             border-radius: 50px;
             text-decoration: none;
             font-weight: 600;
+            font-size: 0.95rem;
             transition: all 0.3s;
             border: none;
             cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
         }
 
         .btn-primary:hover {
             background: #003d33;
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 77, 64, 0.2);
+            box-shadow: 0 10px 20px rgba(0,77,64,0.25);
         }
 
-        /* Hero Section */
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-dark);
+            border: 2px solid var(--border);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--unilag-green);
+            color: var(--unilag-green);
+        }
+
+        /* ── Hero ── */
         .hero {
-            margin-top: 80px;
-            padding: 6rem 5% 4rem;
+            padding: 8rem 5% 4rem;
             text-align: center;
             max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 0 auto;
         }
 
         .badge {
             display: inline-block;
             background: var(--unilag-light);
             color: var(--unilag-green);
-            padding: 0.5rem 1rem;
+            padding: 0.45rem 1rem;
             border-radius: 50px;
             font-size: 0.85rem;
             font-weight: 600;
             margin-bottom: 1.5rem;
-            border: 1px solid var(--unilag-green);
+            border: 1px solid rgba(0,77,64,0.2);
         }
 
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 4rem;
-            font-weight: 600;
+            font-size: clamp(2.5rem, 6vw, 4.2rem);
+            font-weight: 700;
             line-height: 1.1;
             margin-bottom: 1.5rem;
-            color: var(--text-dark);
         }
 
         .highlight {
@@ -133,26 +200,25 @@
         .highlight::after {
             content: '';
             position: absolute;
-            bottom: 0;
+            bottom: 2px;
             left: 0;
             width: 100%;
-            height: 30%;
-            background: rgba(201, 162, 39, 0.3);
+            height: 28%;
+            background: rgba(201,162,39,0.3);
             z-index: -1;
-            transform: skewX(-10deg);
+            transform: skewX(-8deg);
         }
 
         .subtitle {
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             color: var(--text-muted);
-            max-width: 600px;
+            max-width: 580px;
             margin: 0 auto 2rem;
-            line-height: 1.6;
         }
 
         .email-form {
             display: flex;
-            gap: 1rem;
+            gap: 0.75rem;
             justify-content: center;
             max-width: 500px;
             margin: 0 auto;
@@ -161,45 +227,99 @@
 
         .email-input {
             flex: 1;
-            min-width: 250px;
-            padding: 1rem 1.5rem;
-            border: 2px solid #ddd;
+            min-width: 230px;
+            padding: 0.9rem 1.4rem;
+            border: 2px solid var(--border);
             border-radius: 50px;
             font-size: 1rem;
+            font-family: 'Inter', sans-serif;
             outline: none;
-            transition: border-color 0.3s;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .email-input:focus {
             border-color: var(--unilag-green);
+            box-shadow: 0 0 0 3px rgba(0,77,64,0.1);
         }
+
+        .email-input.error { border-color: #e53935; }
+
+        .input-error-msg {
+            width: 100%;
+            text-align: center;
+            color: #e53935;
+            font-size: 0.85rem;
+            margin-top: -0.25rem;
+            display: none;
+        }
+
+        .input-error-msg.show { display: block; }
 
         .disclaimer {
             margin-top: 1rem;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             color: var(--text-muted);
         }
 
-        /* Stats Section */
+        /* ── Countdown ── */
+        .countdown-banner {
+            background: linear-gradient(135deg, var(--unilag-green) 0%, var(--unilag-green-mid) 100%);
+            color: white;
+            text-align: center;
+            padding: 1.25rem 5%;
+            margin: 0 5% 1rem;
+            border-radius: 16px;
+        }
+
+        .countdown-banner p {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            margin-bottom: 0.6rem;
+        }
+
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .countdown-unit {
+            text-align: center;
+        }
+
+        .countdown-unit .value {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+            display: block;
+        }
+
+        .countdown-unit .label {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        /* ── Stats ── */
         .stats {
             display: flex;
             justify-content: center;
             gap: 4rem;
-            padding: 3rem 5%;
+            padding: 2.5rem 5%;
             background: white;
-            margin: 3rem 5%;
+            margin: 1.5rem 5% 0;
             border-radius: 20px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
             flex-wrap: wrap;
         }
 
-        .stat-item {
-            text-align: center;
-        }
+        .stat-item { text-align: center; }
 
         .stat-number {
             font-family: 'Playfair Display', serif;
-            font-size: 3rem;
+            font-size: 2.8rem;
             font-weight: 700;
             color: var(--unilag-green);
             display: block;
@@ -207,89 +327,93 @@
 
         .stat-label {
             color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
         }
 
-        /* How It Works */
+        /* ── Sections ── */
+        .section-header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            margin-bottom: 0.75rem;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        /* ── How It Works ── */
         .how-it-works {
             padding: 5rem 5%;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        .section-header {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-
-        .section-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .section-header p {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-        }
-
         .steps {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 3rem;
-            margin-bottom: 4rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
         }
 
         .step {
             background: white;
-            padding: 2.5rem;
+            padding: 2.25rem;
             border-radius: 20px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
             position: relative;
             overflow: hidden;
-            transition: transform 0.3s;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
         .step:hover {
-            transform: translateY(-5px);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(0,77,64,0.12);
         }
 
         .step-number {
             position: absolute;
-            top: 1rem;
+            top: 0.75rem;
             right: 1rem;
             font-family: 'Playfair Display', serif;
             font-size: 5rem;
-            color: rgba(0, 77, 64, 0.05);
+            color: rgba(0,77,64,0.05);
             font-weight: 700;
             line-height: 1;
         }
 
-        .step-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
+        .step-icon { font-size: 2.2rem; margin-bottom: 0.75rem; }
 
         .step h3 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--text-dark);
+            font-size: 1.4rem;
+            margin-bottom: 0.75rem;
         }
 
-        .step p {
+        .step p { color: var(--text-muted); line-height: 1.7; }
+
+        .step-callout {
+            margin-top: 1.25rem;
+            padding: 1rem;
+            background: var(--bg-warm);
+            border-radius: 10px;
+            font-size: 0.88rem;
             color: var(--text-muted);
-            line-height: 1.6;
+            border-left: 3px solid var(--unilag-gold);
         }
 
-        /* Example Match Card */
+        /* ── Match Example ── */
         .match-example {
-            background: linear-gradient(135deg, var(--unilag-green) 0%, #00695c 100%);
+            background: linear-gradient(135deg, var(--unilag-green) 0%, var(--unilag-green-mid) 100%);
             color: white;
-            padding: 3rem;
+            padding: 2.5rem;
             border-radius: 20px;
-            margin-top: 2rem;
             position: relative;
             overflow: hidden;
         }
@@ -297,11 +421,11 @@
         .match-example::before {
             content: '';
             position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 300px;
-            height: 300px;
-            background: rgba(255,255,255,0.1);
+            top: -60%;
+            right: -8%;
+            width: 320px;
+            height: 320px;
+            background: rgba(255,255,255,0.07);
             border-radius: 50%;
         }
 
@@ -309,217 +433,383 @@
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.75rem;
         }
 
         .match-avatar {
-            width: 60px;
-            height: 60px;
+            width: 56px;
+            height: 56px;
             background: var(--unilag-gold);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 700;
+            flex-shrink: 0;
         }
 
-        .match-info h4 {
-            font-size: 1.3rem;
-            margin-bottom: 0.25rem;
-        }
+        .match-info h4 { font-size: 1.2rem; margin-bottom: 0.3rem; }
 
         .match-compatibility {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.4rem;
             background: rgba(255,255,255,0.2);
-            padding: 0.25rem 0.75rem;
+            padding: 0.2rem 0.7rem;
             border-radius: 50px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
         }
 
-        .match-reasons {
-            list-style: none;
-        }
+        .match-reasons { list-style: none; }
 
         .match-reasons li {
-            padding: 0.75rem 0;
+            padding: 0.65rem 0;
             border-bottom: 1px solid rgba(255,255,255,0.1);
             display: flex;
-            align-items: start;
+            align-items: flex-start;
             gap: 0.75rem;
+            font-size: 0.95rem;
         }
 
-        .match-reasons li:last-child {
-            border-bottom: none;
-        }
+        .match-reasons li:last-child { border-bottom: none; }
 
         .match-reasons li::before {
             content: "•";
             color: var(--unilag-gold);
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
+            flex-shrink: 0;
         }
 
-        /* Features Grid */
-        .features {
+        /* ── Testimonials ── */
+        .testimonials {
             padding: 5rem 5%;
             background: white;
         }
 
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.75rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .testimonial-card {
+            background: var(--bg-warm);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,77,64,0.1);
+        }
+
+        .testimonial-stars {
+            color: var(--unilag-gold);
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .testimonial-text {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            line-height: 1.7;
+            margin-bottom: 1.25rem;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .author-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .author-detail {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* ── Features ── */
+        .features { padding: 5rem 5%; }
+
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
             gap: 2rem;
             max-width: 1000px;
-            margin: 3rem auto 0;
+            margin: 0 auto;
         }
 
         .feature {
             text-align: center;
-            padding: 2rem;
+            padding: 2rem 1.5rem;
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,77,64,0.08);
         }
 
         .feature-icon {
-            width: 60px;
-            height: 60px;
+            width: 56px;
+            height: 56px;
             background: var(--unilag-light);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 1rem;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
         }
 
         .feature h4 {
             font-family: 'Playfair Display', serif;
             margin-bottom: 0.5rem;
-            font-size: 1.2rem;
+            font-size: 1.15rem;
         }
 
-        .feature p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
+        .feature p { color: var(--text-muted); font-size: 0.9rem; }
 
-        /* FAQ Section */
+        /* ── FAQ ── */
         .faq {
             padding: 5rem 5%;
-            max-width: 800px;
+            max-width: 780px;
             margin: 0 auto;
         }
 
-        .faq-item {
-            border-bottom: 1px solid #eee;
-            padding: 1.5rem 0;
-        }
+        .faq-item { border-bottom: 1px solid var(--border); }
 
         .faq-question {
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1rem;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: color 0.3s;
+            padding: 1.4rem 0;
+            transition: color 0.2s;
+            gap: 1rem;
         }
 
-        .faq-question:hover {
+        .faq-question:hover { color: var(--unilag-green); }
+
+        .faq-toggle {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--unilag-light);
             color: var(--unilag-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(45deg);
+            background: var(--unilag-green);
+            color: white;
         }
 
         .faq-answer {
-            margin-top: 1rem;
             color: var(--text-muted);
-            line-height: 1.6;
+            line-height: 1.7;
+            padding-bottom: 1.4rem;
             display: none;
+            font-size: 0.95rem;
         }
 
-        .faq-item.active .faq-answer {
-            display: block;
-        }
+        .faq-item.active .faq-answer { display: block; }
 
-        .faq-item.active .faq-question::after {
-            transform: rotate(45deg);
-        }
-
-        .faq-question::after {
-            content: "+";
-            font-size: 1.5rem;
-            transition: transform 0.3s;
-        }
-
-        /* Footer */
-        footer {
-            background: var(--unilag-green);
-            color: white;
-            padding: 3rem 5%;
+        /* ── CTA ── */
+        .cta-section {
+            margin: 0 5% 5rem;
+            background: linear-gradient(135deg, var(--unilag-green) 0%, var(--unilag-green-mid) 100%);
+            border-radius: 24px;
+            padding: 4rem 5%;
             text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
         }
 
-        .footer-content {
-            max-width: 600px;
-            margin: 0 auto;
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            bottom: -40%;
+            left: -5%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 50%;
         }
 
-        .footer-logo {
+        .cta-section h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
             margin-bottom: 1rem;
         }
 
-        .footer-links {
+        .cta-section p {
+            opacity: 0.85;
+            margin-bottom: 2rem;
+            font-size: 1.05rem;
+        }
+
+        .cta-email-form {
             display: flex;
+            gap: 0.75rem;
             justify-content: center;
-            gap: 2rem;
-            margin: 2rem 0;
+            max-width: 460px;
+            margin: 0 auto;
             flex-wrap: wrap;
         }
 
-        .footer-links a {
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-links a:hover {
+        .cta-email-form .email-input {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.3);
             color: white;
         }
 
-        .copyright {
-            color: rgba(255,255,255,0.6);
-            font-size: 0.9rem;
-            margin-top: 2rem;
+        .cta-email-form .email-input::placeholder { color: rgba(255,255,255,0.6); }
+        .cta-email-form .email-input:focus {
+            border-color: white;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.15);
         }
 
-        /* Quiz Modal */
+        .btn-white {
+            background: white;
+            color: var(--unilag-green);
+            padding: 0.85rem 1.75rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-white:hover {
+            background: var(--unilag-light);
+            transform: translateY(-2px);
+        }
+
+        /* ── Footer ── */
+        footer {
+            background: #0a0a0a;
+            color: white;
+            padding: 3.5rem 5% 2rem;
+        }
+
+        .footer-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1.5fr repeat(3, 1fr);
+            gap: 3rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .footer-brand .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            margin-bottom: 0.75rem;
+            color: white;
+        }
+
+        .footer-brand p {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.88rem;
+            line-height: 1.7;
+        }
+
+        .footer-col h5 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 1rem;
+        }
+
+        .footer-col a {
+            display: block;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 0.6rem;
+            transition: color 0.2s;
+        }
+
+        .footer-col a:hover { color: white; }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 2rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .copyright {
+            color: rgba(255,255,255,0.35);
+            font-size: 0.82rem;
+        }
+
+        /* ── Quiz Modal ── */
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
+            inset: 0;
+            background: rgba(0,0,0,0.6);
             z-index: 2000;
             justify-content: center;
             align-items: center;
             padding: 1rem;
         }
 
-        .modal.active {
-            display: flex;
-        }
+        .modal.active { display: flex; }
 
         .modal-content {
             background: white;
-            border-radius: 20px;
-            max-width: 600px;
+            border-radius: 24px;
+            max-width: 580px;
             width: 100%;
-            max-height: 90vh;
+            max-height: 92vh;
             overflow-y: auto;
             padding: 2.5rem;
             position: relative;
@@ -527,65 +817,90 @@
 
         .close-modal {
             position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            background: none;
+            top: 1.25rem;
+            right: 1.25rem;
+            background: var(--bg-warm);
             border: none;
-            font-size: 1.5rem;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            font-size: 1.2rem;
             cursor: pointer;
             color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
         }
 
-        .quiz-step {
-            display: none;
-        }
-
-        .quiz-step.active {
-            display: block;
-            animation: fadeIn 0.5s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .close-modal:hover { background: var(--border); }
 
         .quiz-progress {
-            height: 4px;
-            background: #eee;
-            border-radius: 2px;
+            height: 5px;
+            background: var(--border);
+            border-radius: 5px;
             margin-bottom: 2rem;
             overflow: hidden;
         }
 
         .quiz-progress-bar {
             height: 100%;
-            background: var(--unilag-green);
-            transition: width 0.3s;
+            background: linear-gradient(90deg, var(--unilag-green), var(--unilag-gold));
+            border-radius: 5px;
+            transition: width 0.4s ease;
         }
 
-        .question {
+        .quiz-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.75rem;
+        }
+
+        .quiz-step-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .quiz-step-label span { color: var(--unilag-green); font-weight: 700; }
+
+        .quiz-step { display: none; }
+        .quiz-step.active {
+            display: block;
+            animation: fadeUp 0.4s ease;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .quiz-step h3 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
             line-height: 1.4;
         }
 
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
+        .quiz-step .quiz-sub {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
         }
 
+        .options { display: flex; flex-direction: column; gap: 0.75rem; }
+
         .option {
-            padding: 1.25rem;
-            border: 2px solid #eee;
+            padding: 1.1rem 1.25rem;
+            border: 2px solid var(--border);
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.9rem;
+            font-size: 0.95rem;
         }
 
         .option:hover {
@@ -601,12 +916,13 @@
         .option-radio {
             width: 20px;
             height: 20px;
-            border: 2px solid #ddd;
+            border: 2px solid #ccc;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            transition: all 0.2s;
         }
 
         .option.selected .option-radio {
@@ -617,117 +933,232 @@
         .option.selected .option-radio::after {
             content: "✓";
             color: white;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
         }
+
+        .options.multi-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .options.multi-grid .option { padding: 0.9rem 1rem; font-size: 0.9rem; }
+
+        .options.scale {
+            flex-direction: row;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .option.scale-btn {
+            flex: 1;
+            min-width: 52px;
+            justify-content: center;
+            padding: 0.85rem 0.5rem;
+            flex-direction: column;
+            gap: 0.2rem;
+            text-align: center;
+        }
+
+        .option.scale-btn .option-radio { display: none; }
+        .option.scale-btn .scale-num { font-weight: 700; font-size: 1.1rem; }
+        .option.scale-btn .scale-label { font-size: 0.65rem; color: var(--text-muted); }
+
+        .quiz-email-field {
+            margin-bottom: 1rem;
+        }
+
+        .quiz-email-field label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            color: var(--text-dark);
+        }
+
+        .quiz-email-field input {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .quiz-email-field input:focus { border-color: var(--unilag-green); }
 
         .quiz-nav {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             margin-top: 2rem;
+            gap: 1rem;
         }
 
-        .btn-secondary {
-            background: transparent;
-            color: var(--text-dark);
-            border: 2px solid #ddd;
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
+        .quiz-nav .btn-primary { flex: 1; justify-content: center; }
+
+        /* Success screen */
+        .quiz-success {
+            text-align: center;
+            padding: 1rem 0 0.5rem;
         }
 
-        .btn-secondary:hover {
-            border-color: var(--unilag-green);
+        .quiz-success .success-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .quiz-success h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .quiz-success p {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .next-drop-info {
+            background: var(--unilag-light);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0,77,64,0.15);
+        }
+
+        .next-drop-info p {
             color: var(--unilag-green);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-            }
-
-            .stats {
-                gap: 2rem;
-            }
-
-            .stat-number {
-                font-size: 2rem;
-            }
-
-            .nav-links {
-                display: none;
-            }
-
-            .steps {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Animations */
-        .fade-in {
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        .slide-up {
-            animation: slideUp 0.8s ease-out;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Loading State */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-        }
-
+        /* ── Utility ── */
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 900px) {
+            .footer-top { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hamburger { display: flex; }
+
+            .stats { gap: 2rem; }
+            .stat-number { font-size: 2.2rem; }
+
+            .steps { grid-template-columns: 1fr; }
+            .options.multi-grid { grid-template-columns: 1fr; }
+            .options.scale { flex-wrap: wrap; }
+
+            .footer-top { grid-template-columns: 1fr 1fr; }
+            .footer-bottom { flex-direction: column; text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            .footer-top { grid-template-columns: 1fr; }
+            .countdown-timer { gap: 1rem; }
+            .modal-content { padding: 1.75rem 1.25rem; }
+        }
+
+        /* Intersection observer reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
 <body>
 
     <!-- Navigation -->
-    <nav>
-        <div class="logo">UNILAG Date Drop</div>
+    <nav id="navbar">
+        <a href="#" class="logo">🎓 UNILAG Date Drop</a>
         <div class="nav-links">
             <a href="#how-it-works">How it Works</a>
+            <a href="#testimonials">Stories</a>
             <a href="#features">Features</a>
             <a href="#faq">FAQ</a>
-            <a href="#" class="btn-primary" onclick="openQuiz()">Take the Quiz</a>
+            <button class="btn-primary" onclick="openQuiz()">Take the Quiz</button>
         </div>
+        <button class="hamburger" id="hamburger" aria-label="Open menu" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </button>
     </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#how-it-works" onclick="toggleMenu()">How it Works</a>
+        <a href="#testimonials" onclick="toggleMenu()">Stories</a>
+        <a href="#features" onclick="toggleMenu()">Features</a>
+        <a href="#faq" onclick="toggleMenu()">FAQ</a>
+        <button class="btn-primary" onclick="toggleMenu(); openQuiz();" style="width:100%; justify-content:center;">Take the Quiz</button>
+    </div>
 
     <!-- Hero Section -->
     <section class="hero">
         <div class="badge">🎓 Exclusively for UNILAG Students</div>
-        <h1 class="slide-up">Date without <span class="highlight">swiping</span></h1>
-        <p class="subtitle slide-up" style="animation-delay: 0.1s">
-            We get to know you deeply, then email you a compatible date each Tuesday. 
-            No endless scrolling. No superficial judgments. Just meaningful connections at University of Lagos.
+        <h1>Date without <span class="highlight">swiping</span></h1>
+        <p class="subtitle">
+            We get to know you deeply, then email you a compatible date each Tuesday at 9pm.
+            No endless scrolling. No superficial judgements. Just meaningful connections at University of Lagos.
         </p>
-        
-        <div class="email-form slide-up" style="animation-delay: 0.2s">
-            <input type="email" class="email-input" placeholder="your.name@unilag.edu.ng" id="emailInput">
-            <button class="btn-primary" onclick="validateAndStart()">Get Started</button>
+
+        <div class="email-form">
+            <input type="email" class="email-input" id="heroEmail" placeholder="your.name@unilag.edu.ng" autocomplete="email">
+            <button class="btn-primary" onclick="validateHeroEmail()">Get Started →</button>
+            <p class="input-error-msg" id="heroEmailError">Please use your UNILAG email (@unilag.edu.ng)</p>
         </div>
-        <p class="disclaimer slide-up" style="animation-delay: 0.3s">
-            🔒 Only @unilag.edu.ng emails allowed. We never post to social media.
-        </p>
+        <p class="disclaimer">🔒 Only @unilag.edu.ng emails allowed. We never post to social media.</p>
     </section>
 
+    <!-- Countdown Banner -->
+    <div class="countdown-banner reveal">
+        <p>Next match drop in</p>
+        <div class="countdown-timer">
+            <div class="countdown-unit">
+                <span class="value" id="cd-days">0</span>
+                <span class="label">Days</span>
+            </div>
+            <div class="countdown-unit">
+                <span class="value" id="cd-hours">0</span>
+                <span class="label">Hours</span>
+            </div>
+            <div class="countdown-unit">
+                <span class="value" id="cd-mins">0</span>
+                <span class="label">Mins</span>
+            </div>
+            <div class="countdown-unit">
+                <span class="value" id="cd-secs">0</span>
+                <span class="label">Secs</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Stats Section -->
-    <section class="stats slide-up">
+    <section class="stats reveal">
         <div class="stat-item">
             <span class="stat-number" id="stat1">0</span>
             <div class="stat-label">Matches Made</div>
@@ -740,452 +1171,649 @@
             <span class="stat-number">10x</span>
             <div class="stat-label">More Dates than Tinder</div>
         </div>
+        <div class="stat-item">
+            <span class="stat-number">94%</span>
+            <div class="stat-label">Would Use Again</div>
+        </div>
     </section>
 
     <!-- How It Works -->
     <section class="how-it-works" id="how-it-works">
-        <div class="section-header">
+        <div class="section-header reveal">
             <h2>How it works</h2>
             <p>Three simple steps to meaningful connections</p>
         </div>
 
         <div class="steps">
-            <div class="step fade-in">
+            <div class="step reveal">
                 <div class="step-number">01</div>
                 <div class="step-icon">📝</div>
                 <h3>Tell us about yourself</h3>
-                <p>Your core values, interests, and what matters to you. Our psychology-backed questionnaire takes 10 minutes but creates matches that actually click.</p>
-                
-                <div style="margin-top: 1.5rem; padding: 1rem; background: var(--bg-warm); border-radius: 10px; font-size: 0.9rem; color: var(--text-muted);">
-                    <strong>Example:</strong> "Having children is essential for a fulfilling life"<br>
-                    <span style="display: flex; gap: 1rem; margin-top: 0.5rem;">
-                        <span>🚫 Hard pass</span>
-                        <span>👶 It's my dream</span>
-                    </span>
+                <p>Your core values, interests, deal-breakers, and what matters most to you. Our psychology-backed questionnaire takes 10 minutes but creates matches that actually click.</p>
+                <div class="step-callout">
+                    <strong>Example question:</strong> "Having children is essential for a fulfilling life" — Strongly Disagree → Strongly Agree
                 </div>
             </div>
 
-            <div class="step fade-in" style="animation-delay: 0.1s">
+            <div class="step reveal" style="transition-delay: 0.1s">
                 <div class="step-number">02</div>
                 <div class="step-icon">💌</div>
-                <h3>Opt in weekly</h3>
-                <p>Opt in before Tuesday 9pm, and we'll send you a match with a personalized note explaining why we think you'll get along.</p>
+                <h3>Opt in each week</h3>
+                <p>Opt in before Tuesday 9pm, and we'll send you a match with a personalised note explaining exactly why we think you'll connect. No guesswork, just reasoning.</p>
+                <div class="step-callout">
+                    Missed a week? No problem — simply opt back in any time.
+                </div>
             </div>
 
-            <div class="step fade-in" style="animation-delay: 0.2s">
+            <div class="step reveal" style="transition-delay: 0.2s">
                 <div class="step-number">03</div>
                 <div class="step-icon">☕</div>
                 <h3>Go on a date!</h3>
-                <p>We give you their email. You figure out the rest—meet up at Cafeteria, grab coffee at Senate Building, or study together at the library.</p>
+                <p>You get their first name and UNILAG email. You figure out the rest — Cafeteria, Senate Building coffee, Jaja Library study session, or whatever feels right.</p>
             </div>
         </div>
 
         <!-- Example Match -->
-        <div class="match-example">
+        <div class="match-example reveal">
             <div class="match-header">
                 <div class="match-avatar">A</div>
                 <div class="match-info">
-                    <h4>Your match: Adaobi</h4>
+                    <h4>Your match this week: Adaobi</h4>
                     <span class="match-compatibility">🎯 94.2% compatibility</span>
                 </div>
             </div>
-            <p style="margin-bottom: 1rem; opacity: 0.9;">Here's why you'll click:</p>
+            <p style="margin-bottom: 1rem; opacity: 0.85; font-size: 0.95rem;">Here's why we think you'll click:</p>
             <ul class="match-reasons">
-                <li>"Growth" and "Family" both made your top 4 core values</li>
-                <li>You both prefer deep conversations over small talk</li>
-                <li>You're both studying Engineering but love creative writing</li>
-                <li>You each value independence but prioritize keeping in touch</li>
+                <li>"Growth" and "Family" both made your top 3 core values</li>
+                <li>You both prefer deep 1-on-1 conversations over group hangouts</li>
+                <li>You're both in Engineering but love creative writing on the side</li>
+                <li>You each value independence but prioritise staying in touch with loved ones</li>
+                <li>You both scored "deal-breaker: no" on having children someday</li>
             </ul>
-            <p style="margin-top: 1.5rem; font-size: 0.9rem; opacity: 0.8;">
-                📧 adaobi.chukwu@unilag.edu.ng
+            <p style="margin-top: 1.5rem; font-size: 0.88rem; opacity: 0.7;">
+                📧 adaobi.chukwu@unilag.edu.ng — opt-in deadline: Tuesday 9pm
             </p>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials" id="testimonials">
+        <div class="section-header reveal">
+            <h2>Real stories from UNILAG students</h2>
+            <p>What happens when the algorithm gets it right</p>
+        </div>
+
+        <div class="testimonials-grid">
+            <div class="testimonial-card reveal">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">"I was sceptical — my roommate dared me to try it. My first match was a 200L Law student I'd seen at the library for two years but never spoken to. We just had our third date."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar" style="background: #004d40;">C</div>
+                    <div>
+                        <div class="author-name">Chukwuemeka O.</div>
+                        <div class="author-detail">400L, Engineering · Match #47</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card reveal" style="transition-delay: 0.1s">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">"The 'why you'll click' note is everything. My match and I both wrote that we'd rather have a small wedding than a big one — on a questionnaire we filled out independently. Spooky accurate."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar" style="background: #c9a227;">F</div>
+                    <div>
+                        <div class="author-name">Fatimah A.</div>
+                        <div class="author-detail">300L, Medicine · Match #112</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card reveal" style="transition-delay: 0.2s">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">"Even when a date didn't go romantic, the compatibility note was so accurate that we became really good study partners. It literally improved my GPA."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar" style="background: #00695c;">T</div>
+                    <div>
+                        <div class="author-name">Tunde B.</div>
+                        <div class="author-detail">500L, Pharmacy · Match #203</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
     <!-- Features -->
     <section class="features" id="features">
-        <div class="section-header">
+        <div class="section-header reveal">
             <h2>Why UNILAG students love it</h2>
             <p>Built for campus life, not endless swiping</p>
         </div>
-        
+
         <div class="features-grid">
-            <div class="feature">
+            <div class="feature reveal">
                 <div class="feature-icon">🤖</div>
                 <h4>AI Matchmaker</h4>
-                <p>Our algorithm learns from every match to get better at finding your type</p>
+                <p>Our algorithm learns from every date to get sharper at finding your type over time</p>
             </div>
-            <div class="feature">
-                <div class="feature-icon">👥</div>
-                <h4>Play Cupid</h4>
-                <p>Recommend matches for your friends and see if the algorithm agrees</p>
-            </div>
-            <div class="feature">
+            <div class="feature reveal" style="transition-delay: 0.05s">
                 <div class="feature-icon">🎯</div>
-                <h4>Values-Based</h4>
-                <p>Matches on what matters: life goals, communication style, core beliefs</p>
+                <h4>Values-First</h4>
+                <p>Matches on what matters: life goals, communication style, core beliefs — not just vibes</p>
             </div>
-            <div class="feature">
+            <div class="feature reveal" style="transition-delay: 0.1s">
+                <div class="feature-icon">💌</div>
+                <h4>Weekly Drop</h4>
+                <p>One curated match every Tuesday. No decision fatigue, no infinite scrolling</p>
+            </div>
+            <div class="feature reveal" style="transition-delay: 0.15s">
                 <div class="feature-icon">🔒</div>
                 <h4>Privacy First</h4>
-                <p>Only first names and emails shared. No photos until you meet.</p>
+                <p>Only first names and emails shared. No photos until you choose to meet</p>
+            </div>
+            <div class="feature reveal" style="transition-delay: 0.2s">
+                <div class="feature-icon">👥</div>
+                <h4>Play Cupid</h4>
+                <p>Nominate a friend for a specific match — see if the algorithm agrees with you</p>
+            </div>
+            <div class="feature reveal" style="transition-delay: 0.25s">
+                <div class="feature-icon">📊</div>
+                <h4>Date Feedback</h4>
+                <p>Rate your date and give feedback so your next match is even better</p>
             </div>
         </div>
     </section>
 
     <!-- FAQ -->
     <section class="faq" id="faq">
-        <div class="section-header">
+        <div class="section-header reveal">
             <h2>Frequently asked questions</h2>
         </div>
 
         <div class="faq-item">
-            <div class="faq-question">Who can use UNILAG Date Drop?</div>
-            <div class="faq-answer">
-                Currently enrolled University of Lagos students with valid @unilag.edu.ng email addresses. We verify every signup to keep the community safe and campus-focused.
-            </div>
+            <div class="faq-question">Who can use UNILAG Date Drop? <span class="faq-toggle">+</span></div>
+            <div class="faq-answer">Currently enrolled University of Lagos students with a valid @unilag.edu.ng email. We verify every signup to keep the community safe and campus-focused. Alumni and staff are not eligible at this time.</div>
         </div>
 
         <div class="faq-item">
-            <div class="faq-question">How does the matching algorithm work?</div>
-            <div class="faq-answer">
-                We use stable matching theory combined with machine learning. You answer ~50 questions about values, lifestyle, and preferences. Our model finds optimal pairings where mutual compatibility is highest, learning from feedback after each date.
-            </div>
+            <div class="faq-question">How does the matching algorithm work? <span class="faq-toggle">+</span></div>
+            <div class="faq-answer">We use stable matching theory combined with machine learning. You answer ~50 questions about values, lifestyle, and preferences. The model finds optimal pairings where mutual compatibility is highest, and improves based on date feedback over time.</div>
         </div>
 
         <div class="faq-item">
-            <div class="faq-question">What if I get matched with someone I know?</div>
-            <div class="faq-answer">
-                Great! Use it as an excuse to hang out. Many matches turn into study partners or friends. There's no pressure for romance—just genuine connection.
-            </div>
+            <div class="faq-question">What if I get matched with someone I already know? <span class="faq-toggle">+</span></div>
+            <div class="faq-answer">Great! Use it as a low-pressure excuse to actually hang out. Many matches become close friends or study partners even when romance isn't the outcome. You can also tell us and we'll note it — no hard feelings.</div>
         </div>
 
         <div class="faq-item">
-            <div class="faq-question">Is my data safe?</div>
-            <div class="faq-answer">
-                Absolutely. We're a Public Benefit Corporation legally required to prioritize your wellbeing over profits. Your data is encrypted, never sold, and used only for matching purposes.
-            </div>
+            <div class="faq-question">Is my data safe? <span class="faq-toggle">+</span></div>
+            <div class="faq-answer">Absolutely. We're a Public Benefit Corporation legally required to prioritise your wellbeing over profits. Your questionnaire answers are encrypted, never sold, and used only for matching. Only your first name and UNILAG email are ever shared with a match.</div>
         </div>
 
         <div class="faq-item">
-            <div class="faq-question">Can I choose my preferences?</div>
-            <div class="faq-answer">
-                Yes! You can set preferences for age range, faculty, and other factors. However, we sometimes override strict filters if our algorithm detects exceptional compatibility—sometimes opposites attract!
-            </div>
+            <div class="faq-question">Can I pause or delete my account? <span class="faq-toggle">+</span></div>
+            <div class="faq-answer">Yes — anytime. Simply don't opt in on a given week to skip it. To permanently delete your profile and all data, email us from your UNILAG address and we'll process it within 48 hours.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Can I set preferences (faculty, religion, etc.)? <span class="faq-toggle">+</span></div>
+            <div class="faq-answer">You can indicate preferences, and we weight them heavily. However, we occasionally override strict filters when the algorithm detects exceptional compatibility on the things that matter most — sometimes the best match is someone you'd never have swiped on.</div>
         </div>
     </section>
 
+    <!-- CTA Section -->
+    <div class="cta-section reveal">
+        <h2>Your next meaningful connection is one Tuesday away</h2>
+        <p>Join 850+ UNILAG students already in the pool</p>
+        <div class="cta-email-form">
+            <input type="email" class="email-input" id="ctaEmail" placeholder="your.name@unilag.edu.ng">
+            <button class="btn-white" onclick="validateCtaEmail()">Join the Drop →</button>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer>
-        <div class="footer-content">
-            <div class="footer-logo">UNILAG Date Drop</div>
-            <p style="opacity: 0.9; margin-bottom: 1rem;">
-                Making the most of your time at University of Lagos.<br>
-                Because the quality of your relationships determines the quality of your life.
-            </p>
-            <div class="footer-links">
-                <a href="#">About</a>
-                <a href="#">Privacy</a>
-                <a href="#">Terms</a>
-                <a href="#">Contact</a>
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="footer-logo">🎓 UNILAG Date Drop</div>
+                    <p>Making the most of your time at University of Lagos. Because the quality of your relationships determines the quality of your life.</p>
+                </div>
+                <div class="footer-col">
+                    <h5>Product</h5>
+                    <a href="#how-it-works">How it Works</a>
+                    <a href="#features">Features</a>
+                    <a href="#" onclick="openQuiz(); return false;">Take the Quiz</a>
+                </div>
+                <div class="footer-col">
+                    <h5>Company</h5>
+                    <a href="#">About Us</a>
+                    <a href="#">Blog</a>
+                    <a href="#">Press</a>
+                </div>
+                <div class="footer-col">
+                    <h5>Legal</h5>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Contact</a>
+                </div>
             </div>
-            <p class="copyright">
-                © 2026 UNILAG Date Drop. Not affiliated with Stanford University.<br>
-                Built with 💚 for UNILAG students.
-            </p>
+            <div class="footer-bottom">
+                <p class="copyright">© 2026 UNILAG Date Drop. Not affiliated with the University of Lagos administration. Built with love for UNILAG students.</p>
+                <p class="copyright">Inspired by Dateddrop · Stanford Date Match</p>
+            </div>
         </div>
     </footer>
 
     <!-- Quiz Modal -->
-    <div class="modal" id="quizModal">
+    <div class="modal" id="quizModal" role="dialog" aria-modal="true" aria-label="Registration quiz">
         <div class="modal-content">
-            <button class="close-modal" onclick="closeQuiz()">×</button>
-            
+            <button class="close-modal" onclick="closeQuiz()" aria-label="Close quiz">×</button>
+
             <div class="quiz-progress">
                 <div class="quiz-progress-bar" id="progressBar" style="width: 0%"></div>
             </div>
+            <div class="quiz-meta">
+                <span class="quiz-step-label">Step <span id="stepNum">1</span> of 6</span>
+                <span class="quiz-step-label" id="stepCategory">Intent</span>
+            </div>
 
-            <!-- Step 1 -->
+            <!-- Step 1 – Intent -->
             <div class="quiz-step active" data-step="1">
-                <p class="question">What are you looking for right now?</p>
+                <h3>What are you looking for right now?</h3>
+                <p class="quiz-sub">Be honest — this helps us find the right match for you.</p>
                 <div class="options">
                     <div class="option" onclick="selectOption(this, 1)">
-                        <div class="option-radio"></div>
-                        <span>Life partner / Marriage</span>
+                        <div class="option-radio"></div><span>Life partner / Marriage</span>
                     </div>
                     <div class="option" onclick="selectOption(this, 1)">
-                        <div class="option-radio"></div>
-                        <span>Long-term relationship</span>
+                        <div class="option-radio"></div><span>Long-term relationship</span>
                     </div>
                     <div class="option" onclick="selectOption(this, 1)">
-                        <div class="option-radio"></div>
-                        <span>Short-term, open to long-term</span>
+                        <div class="option-radio"></div><span>Short-term, open to long-term</span>
                     </div>
                     <div class="option" onclick="selectOption(this, 1)">
-                        <div class="option-radio"></div>
-                        <span>Just seeing what's out there</span>
+                        <div class="option-radio"></div><span>Just seeing what's out there</span>
                     </div>
                 </div>
                 <div class="quiz-nav">
                     <div></div>
-                    <button class="btn-primary" onclick="nextStep()">Continue</button>
+                    <button class="btn-primary" onclick="nextStep()">Continue →</button>
                 </div>
             </div>
 
-            <!-- Step 2 -->
+            <!-- Step 2 – Children -->
             <div class="quiz-step" data-step="2">
-                <p class="question">How important is having children to you?</p>
-                <div class="options">
-                    <div class="option" onclick="selectOption(this, 2)">
-                        <div class="option-radio"></div>
-                        <span>1 - Hard pass 🚫</span>
+                <h3>How important is having children to you?</h3>
+                <p class="quiz-sub">Rate from 1 (deal-breaker no) to 7 (absolute dream)</p>
+                <div class="options scale">
+                    <div class="option scale-btn" onclick="selectOption(this, 2)">
+                        <span class="scale-num">1</span>
+                        <span class="scale-label">Hard no</span>
                     </div>
-                    <div class="option" onclick="selectOption(this, 2)">
-                        <div class="option-radio"></div>
-                        <span>4 - Open to it</span>
+                    <div class="option scale-btn" onclick="selectOption(this, 2)">
+                        <span class="scale-num">2</span>
+                        <span class="scale-label"></span>
                     </div>
-                    <div class="option" onclick="selectOption(this, 2)">
-                        <div class="option-radio"></div>
-                        <span>7 - It's my dream 👶</span>
+                    <div class="option scale-btn" onclick="selectOption(this, 2)">
+                        <span class="scale-num">3</span>
+                        <span class="scale-label">Leaning no</span>
+                    </div>
+                    <div class="option scale-btn" onclick="selectOption(this, 2)">
+                        <span class="scale-num">4</span>
+                        <span class="scale-label">Open</span>
+                    </div>
+                    <div class="option scale-btn" onclick="selectOption(this, 2)">
+                        <span class="scale-num">5</span>
+                        <span class="scale-label">Leaning yes</span>
+                    </div>
+                    <div class="option scale-btn" onclick="selectOption(this, 2)">
+                        <span class="scale-num">6</span>
+                        <span class="scale-label"></span>
+                    </div>
+                    <div class="option scale-btn" onclick="selectOption(this, 2)">
+                        <span class="scale-num">7</span>
+                        <span class="scale-label">My dream</span>
                     </div>
                 </div>
                 <div class="quiz-nav">
-                    <button class="btn-secondary" onclick="prevStep()">Back</button>
-                    <button class="btn-primary" onclick="nextStep()">Continue</button>
+                    <button class="btn-secondary" onclick="prevStep()">← Back</button>
+                    <button class="btn-primary" onclick="nextStep()">Continue →</button>
                 </div>
             </div>
 
-            <!-- Step 3 -->
+            <!-- Step 3 – Values -->
             <div class="quiz-step" data-step="3">
-                <p class="question">Select your top 3 core values:</p>
-                <div class="options" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
-                    <div class="option" onclick="toggleMulti(this)" style="padding: 0.75rem;">
-                        <div class="option-radio"></div>
-                        <span>Family</span>
-                    </div>
-                    <div class="option" onclick="toggleMulti(this)" style="padding: 0.75rem;">
-                        <div class="option-radio"></div>
-                        <span>Career</span>
-                    </div>
-                    <div class="option" onclick="toggleMulti(this)" style="padding: 0.75rem;">
-                        <div class="option-radio"></div>
-                        <span>Adventure</span>
-                    </div>
-                    <div class="option" onclick="toggleMulti(this)" style="padding: 0.75rem;">
-                        <div class="option-radio"></div>
-                        <span>Creativity</span>
-                    </div>
-                    <div class="option" onclick="toggleMulti(this)" style="padding: 0.75rem;">
-                        <div class="option-radio"></div>
-                        <span>Stability</span>
-                    </div>
-                    <div class="option" onclick="toggleMulti(this)" style="padding: 0.75rem;">
-                        <div class="option-radio"></div>
-                        <span>Growth</span>
-                    </div>
+                <h3>Select your top 3 core values</h3>
+                <p class="quiz-sub">Choose exactly 3 — these anchor your match profile.</p>
+                <div class="options multi-grid" id="valuesGrid">
+                    <div class="option" onclick="toggleMulti(this, 3, 3)"><div class="option-radio"></div><span>Family</span></div>
+                    <div class="option" onclick="toggleMulti(this, 3, 3)"><div class="option-radio"></div><span>Career</span></div>
+                    <div class="option" onclick="toggleMulti(this, 3, 3)"><div class="option-radio"></div><span>Adventure</span></div>
+                    <div class="option" onclick="toggleMulti(this, 3, 3)"><div class="option-radio"></div><span>Creativity</span></div>
+                    <div class="option" onclick="toggleMulti(this, 3, 3)"><div class="option-radio"></div><span>Stability</span></div>
+                    <div class="option" onclick="toggleMulti(this, 3, 3)"><div class="option-radio"></div><span>Growth</span></div>
+                    <div class="option" onclick="toggleMulti(this, 3, 3)"><div class="option-radio"></div><span>Faith</span></div>
+                    <div class="option" onclick="toggleMulti(this, 3, 3)"><div class="option-radio"></div><span>Independence</span></div>
                 </div>
                 <div class="quiz-nav">
-                    <button class="btn-secondary" onclick="prevStep()">Back</button>
-                    <button class="btn-primary" onclick="finishQuiz()">Complete Setup</button>
+                    <button class="btn-secondary" onclick="prevStep()">← Back</button>
+                    <button class="btn-primary" onclick="nextStep()">Continue →</button>
                 </div>
             </div>
 
-            <!-- Success Step -->
+            <!-- Step 4 – Communication -->
             <div class="quiz-step" data-step="4">
-                <div style="text-align: center; padding: 2rem 0;">
-                    <div style="font-size: 4rem; margin-bottom: 1rem;">🎉</div>
-                    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 1rem;">You're all set!</h3>
-                    <p style="color: var(--text-muted); margin-bottom: 2rem;">
-                        Check your email for verification. Your first match drops this Tuesday at 9pm!
-                    </p>
-                    <button class="btn-primary" onclick="closeQuiz()" style="width: 100%;">Got it!</button>
+                <h3>How do you prefer to communicate?</h3>
+                <p class="quiz-sub">Pick the one that feels most like you.</p>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 4)">
+                        <div class="option-radio"></div><span>Deep conversations, one-on-one — I open up slowly but fully</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 4)">
+                        <div class="option-radio"></div><span>Banter and humour first, depth later — I use jokes to connect</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 4)">
+                        <div class="option-radio"></div><span>Acts of service — I show I care by doing, not always saying</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 4)">
+                        <div class="option-radio"></div><span>Quality time — being present matters more than words</span>
+                    </div>
+                </div>
+                <div class="quiz-nav">
+                    <button class="btn-secondary" onclick="prevStep()">← Back</button>
+                    <button class="btn-primary" onclick="nextStep()">Continue →</button>
                 </div>
             </div>
+
+            <!-- Step 5 – Lifestyle -->
+            <div class="quiz-step" data-step="5">
+                <h3>Pick up to 3 things you love doing</h3>
+                <p class="quiz-sub">We use this to suggest date ideas — and spot shared passions.</p>
+                <div class="options multi-grid">
+                    <div class="option" onclick="toggleMulti(this, 5, 3)"><div class="option-radio"></div><span>Reading / Writing</span></div>
+                    <div class="option" onclick="toggleMulti(this, 5, 3)"><div class="option-radio"></div><span>Sports / Fitness</span></div>
+                    <div class="option" onclick="toggleMulti(this, 5, 3)"><div class="option-radio"></div><span>Music / Dance</span></div>
+                    <div class="option" onclick="toggleMulti(this, 5, 3)"><div class="option-radio"></div><span>Film / TV</span></div>
+                    <div class="option" onclick="toggleMulti(this, 5, 3)"><div class="option-radio"></div><span>Cooking / Food</span></div>
+                    <div class="option" onclick="toggleMulti(this, 5, 3)"><div class="option-radio"></div><span>Tech / Gaming</span></div>
+                    <div class="option" onclick="toggleMulti(this, 5, 3)"><div class="option-radio"></div><span>Travel / Outdoors</span></div>
+                    <div class="option" onclick="toggleMulti(this, 5, 3)"><div class="option-radio"></div><span>Volunteering / Causes</span></div>
+                </div>
+                <div class="quiz-nav">
+                    <button class="btn-secondary" onclick="prevStep()">← Back</button>
+                    <button class="btn-primary" onclick="nextStep()">Continue →</button>
+                </div>
+            </div>
+
+            <!-- Step 6 – Email & Submit -->
+            <div class="quiz-step" data-step="6">
+                <h3>Almost done — enter your UNILAG email</h3>
+                <p class="quiz-sub">We'll send your first match this Tuesday at 9pm.</p>
+                <div class="quiz-email-field">
+                    <label for="quizEmail">UNILAG email address</label>
+                    <input type="email" id="quizEmail" placeholder="your.name@unilag.edu.ng" autocomplete="email">
+                </div>
+                <div class="quiz-email-field">
+                    <label for="quizName">First name</label>
+                    <input type="text" id="quizName" placeholder="e.g. Emeka" autocomplete="given-name">
+                </div>
+                <p style="font-size:0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
+                    🔒 Your data is encrypted. Only your first name and email are shared with your match.
+                </p>
+                <div class="quiz-nav">
+                    <button class="btn-secondary" onclick="prevStep()">← Back</button>
+                    <button class="btn-primary" onclick="finishQuiz()" style="flex:1; justify-content:center;">Complete Setup ✓</button>
+                </div>
+            </div>
+
+            <!-- Success -->
+            <div class="quiz-step" data-step="7">
+                <div class="quiz-success">
+                    <span class="success-icon">🎉</span>
+                    <h3>You're in the pool!</h3>
+                    <p>Check your inbox for a verification email. Opt in before Tuesday 9pm and your first match will land in your inbox that night.</p>
+                    <div class="next-drop-info">
+                        <p>⏰ Next drop: <span id="nextDropLabel">this Tuesday at 9pm WAT</span></p>
+                    </div>
+                    <button class="btn-primary" onclick="closeQuiz()" style="width:100%; justify-content:center;">Got it, can't wait!</button>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <script>
-        // Counter Animation
-        function animateValue(id, start, end, duration) {
-            let obj = document.getElementById(id);
-            let range = end - start;
-            let minTimer = 50;
-            let stepTime = Math.abs(Math.floor(duration / range));
-            stepTime = Math.max(stepTime, minTimer);
-            let startTime = new Date().getTime();
-            let endTime = startTime + duration;
-            let timer;
-            
-            function run() {
-                let now = new Date().getTime();
-                let remaining = Math.max((endTime - now) / duration, 0);
-                let value = Math.round(end - (remaining * range));
-                obj.innerHTML = value.toLocaleString() + (id === 'stat2' ? '+' : '');
-                if (value == end) {
-                    clearInterval(timer);
-                }
-            }
-            
-            timer = setInterval(run, stepTime);
-            run();
-        }
+    // ── Nav scroll shadow ──────────────────────────────────────────────────────
+    window.addEventListener('scroll', () => {
+        document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+    });
 
-        // Animate stats on load
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                animateValue("stat1", 0, 1250, 2000);
-                animateValue("stat2", 0, 850, 2000);
-            }, 500);
+    // ── Hamburger menu ─────────────────────────────────────────────────────────
+    function toggleMenu() {
+        const btn = document.getElementById('hamburger');
+        const menu = document.getElementById('mobileMenu');
+        btn.classList.toggle('open');
+        menu.classList.toggle('open');
+    }
+
+    // ── Countdown to next Tuesday 21:00 WAT (UTC+1) ────────────────────────────
+    function getNextTuesdayDrop() {
+        const now = new Date();
+        const target = new Date(now);
+        // WAT is UTC+1; express everything in UTC
+        // Tuesday = day 2
+        const day = now.getUTCDay();
+        let daysUntilTuesday = (2 - day + 7) % 7;
+        // if today IS Tuesday but after 20:00 UTC (21:00 WAT), push to next week
+        if (day === 2 && now.getUTCHours() >= 20) daysUntilTuesday = 7;
+        if (daysUntilTuesday === 0 && now.getUTCHours() >= 20) daysUntilTuesday = 7;
+
+        target.setUTCDate(now.getUTCDate() + daysUntilTuesday);
+        target.setUTCHours(20, 0, 0, 0); // 21:00 WAT = 20:00 UTC
+        return target;
+    }
+
+    function updateCountdown() {
+        const now = new Date();
+        const diff = getNextTuesdayDrop() - now;
+        if (diff <= 0) { updateCountdown(); return; }
+
+        const days  = Math.floor(diff / 86400000);
+        const hours = Math.floor((diff % 86400000) / 3600000);
+        const mins  = Math.floor((diff % 3600000) / 60000);
+        const secs  = Math.floor((diff % 60000) / 1000);
+
+        document.getElementById('cd-days').textContent  = String(days).padStart(2, '0');
+        document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
+        document.getElementById('cd-mins').textContent  = String(mins).padStart(2, '0');
+        document.getElementById('cd-secs').textContent  = String(secs).padStart(2, '0');
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // ── Animated counters ──────────────────────────────────────────────────────
+    function animateCounter(id, end, suffix, duration) {
+        const el = document.getElementById(id);
+        const start = performance.now();
+        function update(ts) {
+            const progress = Math.min((ts - start) / duration, 1);
+            const ease = 1 - Math.pow(1 - progress, 3);
+            el.textContent = Math.round(ease * end).toLocaleString() + (suffix || '');
+            if (progress < 1) requestAnimationFrame(update);
+        }
+        requestAnimationFrame(update);
+    }
+
+    // ── Intersection Observer ──────────────────────────────────────────────────
+    let statsAnimated = false;
+
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('visible');
+
+            // Trigger counters when stats section appears
+            if (entry.target.classList.contains('stats') && !statsAnimated) {
+                statsAnimated = true;
+                animateCounter('stat1', 1250, '', 1800);
+                animateCounter('stat2', 850, '+', 1800);
+            }
+            io.unobserve(entry.target);
         });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
-        // FAQ Accordion
-        document.querySelectorAll('.faq-question').forEach(item => {
-            item.addEventListener('click', () => {
-                const parent = item.parentElement;
-                const isActive = parent.classList.contains('active');
-                
-                // Close all
-                document.querySelectorAll('.faq-item').forEach(faq => {
-                    faq.classList.remove('active');
-                });
-                
-                // Open clicked if wasn't active
-                if (!isActive) {
-                    parent.classList.add('active');
-                }
-            });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    // ── FAQ accordion ──────────────────────────────────────────────────────────
+    document.querySelectorAll('.faq-question').forEach(q => {
+        q.addEventListener('click', () => {
+            const item = q.parentElement;
+            const isOpen = item.classList.contains('active');
+            document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+            if (!isOpen) item.classList.add('active');
         });
+    });
 
-        // Quiz Modal Logic
-        let currentStep = 1;
-        const totalSteps = 3;
+    // ── Email validation ───────────────────────────────────────────────────────
+    function isUnilagEmail(val) {
+        return val.trim().toLowerCase().endsWith('@unilag.edu.ng');
+    }
 
-        function openQuiz() {
-            document.getElementById('quizModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
+    function validateHeroEmail() {
+        const input = document.getElementById('heroEmail');
+        const errEl = document.getElementById('heroEmailError');
+        if (isUnilagEmail(input.value)) {
+            input.classList.remove('error');
+            errEl.classList.remove('show');
+            openQuiz(input.value);
+        } else {
+            input.classList.add('error');
+            errEl.classList.add('show');
+            input.focus();
+        }
+    }
+
+    function validateCtaEmail() {
+        const val = document.getElementById('ctaEmail').value;
+        if (isUnilagEmail(val)) {
+            openQuiz(val);
+        } else {
+            alert('Please use your UNILAG email address (@unilag.edu.ng)');
+        }
+    }
+
+    // Allow Enter key on hero input
+    document.getElementById('heroEmail').addEventListener('keydown', e => {
+        if (e.key === 'Enter') validateHeroEmail();
+    });
+
+    // ── Quiz logic ─────────────────────────────────────────────────────────────
+    const TOTAL_STEPS = 6;
+    const STEP_CATEGORIES = ['Intent', 'Children', 'Values', 'Communication', 'Lifestyle', 'Your Email'];
+    let currentStep = 1;
+
+    function openQuiz(prefillEmail) {
+        if (prefillEmail) {
+            document.getElementById('quizEmail').value = prefillEmail;
+        }
+        document.getElementById('quizModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeQuiz() {
+        document.getElementById('quizModal').classList.remove('active');
+        document.body.style.overflow = '';
+        setTimeout(() => {
+            currentStep = 1;
+            renderStep();
+            document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+        }, 300);
+    }
+
+    function renderStep() {
+        document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+        document.querySelector(`.quiz-step[data-step="${currentStep}"]`).classList.add('active');
+
+        const progressSteps = Math.min(currentStep - 1, TOTAL_STEPS);
+        document.getElementById('progressBar').style.width = (progressSteps / TOTAL_STEPS * 100) + '%';
+        document.getElementById('stepNum').textContent = Math.min(currentStep, TOTAL_STEPS);
+        document.getElementById('stepCategory').textContent = STEP_CATEGORIES[currentStep - 1] || '';
+    }
+
+    function nextStep() {
+        if (currentStep < TOTAL_STEPS + 1) {
+            currentStep++;
+            renderStep();
+        }
+    }
+
+    function prevStep() {
+        if (currentStep > 1) {
+            currentStep--;
+            renderStep();
+        }
+    }
+
+    function selectOption(el, step) {
+        el.parentElement.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+        el.classList.add('selected');
+    }
+
+    function toggleMulti(el, step, max) {
+        el.classList.toggle('selected');
+        const selected = el.parentElement.querySelectorAll('.selected');
+        if (selected.length > max) {
+            el.classList.remove('selected');
+        }
+    }
+
+    function finishQuiz() {
+        const email = document.getElementById('quizEmail').value.trim();
+        const name  = document.getElementById('quizName').value.trim();
+
+        if (!isUnilagEmail(email)) {
+            document.getElementById('quizEmail').style.borderColor = '#e53935';
+            document.getElementById('quizEmail').focus();
+            return;
+        }
+        if (!name) {
+            document.getElementById('quizName').style.borderColor = '#e53935';
+            document.getElementById('quizName').focus();
+            return;
         }
 
-        function closeQuiz() {
-            document.getElementById('quizModal').classList.remove('active');
-            document.body.style.overflow = 'auto';
-            // Reset quiz
-            setTimeout(() => {
-                currentStep = 1;
-                updateQuizView();
-                document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
-            }, 300);
-        }
+        // Show success
+        currentStep = 7;
+        document.getElementById('progressBar').style.width = '100%';
+        renderStep();
 
-        function validateAndStart() {
-            const email = document.getElementById('emailInput').value;
-            if (email.endsWith('@unilag.edu.ng')) {
-                openQuiz();
-            } else {
-                alert('Please use your UNILAG email (@unilag.edu.ng)');
-                document.getElementById('emailInput').style.borderColor = 'red';
-                setTimeout(() => {
-                    document.getElementById('emailInput').style.borderColor = '#ddd';
-                }, 2000);
-            }
-        }
+        // Set next drop label
+        const drop = getNextTuesdayDrop();
+        const opts = { weekday: 'long', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short', timeZone: 'Africa/Lagos' };
+        document.getElementById('nextDropLabel').textContent = drop.toLocaleString('en-NG', opts);
+    }
 
-        function selectOption(element, step) {
-            // Remove selected from siblings
-            element.parentElement.querySelectorAll('.option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-            element.classList.add('selected');
-        }
+    // Close modal on outside click
+    document.getElementById('quizModal').addEventListener('click', e => {
+        if (e.target === document.getElementById('quizModal')) closeQuiz();
+    });
 
-        function toggleMulti(element) {
-            element.classList.toggle('selected');
-            // Limit to 3 selections
-            const selected = element.parentElement.querySelectorAll('.selected');
-            if (selected.length > 3) {
-                element.classList.remove('selected');
-                alert('Please select only 3 values');
-            }
-        }
+    // Close modal on Escape
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeQuiz();
+    });
 
-        function updateQuizView() {
-            // Hide all steps
-            document.querySelectorAll('.quiz-step').forEach(step => {
-                step.classList.remove('active');
-            });
-            
-            // Show current
-            document.querySelector(`.quiz-step[data-step="${currentStep}"]`).classList.add('active');
-            
-            // Update progress
-            const progress = ((currentStep - 1) / totalSteps) * 100;
-            document.getElementById('progressBar').style.width = progress + '%';
-        }
-
-        function nextStep() {
-            if (currentStep < totalSteps) {
-                currentStep++;
-                updateQuizView();
-            }
-        }
-
-        function prevStep() {
-            if (currentStep > 1) {
-                currentStep--;
-                updateQuizView();
-            }
-        }
-
-        function finishQuiz() {
-            currentStep = 4;
-            document.getElementById('progressBar').style.width = '100%';
-            updateQuizView();
-            
-            // Here you would typically send data to server
-            console.log('Quiz completed!');
-        }
-
-        // Close modal on outside click
-        document.getElementById('quizModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('quizModal')) {
-                closeQuiz();
-            }
-        });
-
-        // Smooth scroll for nav links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+    // Smooth scroll nav links
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', function(e) {
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
                 e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         });
-
-        // Intersection Observer for animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.step, .feature').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.6s, transform 0.6s';
-            observer.observe(el);
-        });
+    });
     </script>
 </body>
 </html>
