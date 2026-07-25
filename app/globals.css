@@ -1,0 +1,393 @@
+@import "tailwindcss";
+
+/* next-themes drives the theme with a class on <html>, so the dark variant
+   must key off that class rather than the OS media query. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-gold: #f5b84e;
+  --color-gold-bright: #ffd486;
+  --color-gold-deep: #c98a24;
+  --color-ink: #090909;
+  --color-surface: #171717;
+  --color-success: #4ade80;
+  --color-danger: #ef4444;
+  --color-info: #60a5fa;
+
+  --radius-glass: 28px;
+  --radius-panel: 20px;
+  --radius-chip: 999px;
+
+  --font-display: var(--font-sans-stack);
+  --font-sans: var(--font-sans-stack);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --animate-fade-in: fade-in 220ms var(--ease-out-expo);
+  --animate-fade-out: fade-out 160ms ease-in;
+  --animate-pop-in: pop-in 260ms var(--ease-out-expo);
+  --animate-pop-out: pop-out 160ms ease-in;
+  --animate-drift: drift 42s ease-in-out infinite;
+  --animate-pulse-dot: pulse-dot 2.4s ease-in-out infinite;
+  --animate-shimmer: shimmer 2.6s linear infinite;
+}
+
+/* Overlay / popover transitions. Radix toggles data-state, these do the rest. */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@keyframes pop-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(3%, -4%, 0) scale(1.06);
+  }
+  66% {
+    transform: translate3d(-3%, 3%, 0) scale(0.96);
+  }
+}
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 currentColor;
+  }
+  50% {
+    opacity: 0.75;
+    box-shadow: 0 0 0 5px transparent;
+  }
+}
+@keyframes shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(200%);
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Theme variables
+ * SF Pro is not licensed for web redistribution, so we ask for it by
+ * name (real SF on Apple hardware) and fall back to Inter everywhere else.
+ * ------------------------------------------------------------------ */
+:root {
+  --font-sans-stack:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    var(--font-inter), "Segoe UI", system-ui, sans-serif;
+
+  --glass-blur: 32px;
+  --glass-bg: linear-gradient(
+    150deg,
+    rgb(255 255 255 / 0.72) 0%,
+    rgb(255 255 255 / 0.5) 100%
+  );
+  --glass-border: rgb(15 15 15 / 0.08);
+  --glass-inset: rgb(255 255 255 / 0.9);
+  --glass-shadow: 0 30px 80px rgb(80 60 20 / 0.16);
+  --glass-sheen: rgb(255 255 255 / 0.55);
+  --glass-overlay-bg: linear-gradient(
+    150deg,
+    rgb(252 249 243 / 0.94) 0%,
+    rgb(246 241 231 / 0.9) 100%
+  );
+  --glass-rim: linear-gradient(
+    140deg,
+    rgb(255 255 255 / 0.95),
+    rgb(255 255 255 / 0.15) 38%,
+    transparent 62%,
+    rgb(245 184 78 / 0.35)
+  );
+
+  --fg: #14110b;
+  --fg-muted: #5d574a;
+  --fg-faint: #8a8375;
+  --hairline: rgb(20 17 11 / 0.1);
+  --page-bg: #f6efe2;
+
+  --track: rgb(20 17 11 / 0.08);
+  --noise-opacity: 0.035;
+}
+
+.dark {
+  --glass-bg: linear-gradient(
+    150deg,
+    rgb(255 255 255 / 0.14) 0%,
+    rgb(255 255 255 / 0.05) 100%
+  );
+  --glass-border: rgb(255 255 255 / 0.15);
+  --glass-inset: rgb(255 255 255 / 0.14);
+  --glass-shadow: 0 30px 80px rgb(0 0 0 / 0.45);
+  --glass-sheen: rgb(255 255 255 / 0.16);
+  --glass-overlay-bg: linear-gradient(
+    150deg,
+    rgb(30 29 27 / 0.88) 0%,
+    rgb(18 17 16 / 0.85) 100%
+  );
+  --glass-rim: linear-gradient(
+    140deg,
+    rgb(255 255 255 / 0.5),
+    rgb(255 255 255 / 0.06) 38%,
+    transparent 62%,
+    rgb(245 184 78 / 0.28)
+  );
+
+  --fg: #f7f4ee;
+  --fg-muted: #a8a297;
+  --fg-faint: #756f65;
+  --hairline: rgb(255 255 255 / 0.09);
+  --page-bg: #090909;
+
+  --track: rgb(255 255 255 / 0.08);
+  --noise-opacity: 0.05;
+}
+
+@layer base {
+  * {
+    border-color: var(--hairline);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Keeps the fixed backdrop from being repainted by iOS URL-bar resizes. */
+    background-color: var(--page-bg);
+  }
+
+  body {
+    background-color: var(--page-bg);
+    color: var(--fg);
+    font-family: var(--font-sans-stack);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: rgb(245 184 78 / 0.32);
+    color: var(--fg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  /* Slim, unobtrusive scrollbars that suit the glass aesthetic. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--track) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: var(--track);
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 999px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: rgb(245 184 78 / 0.45);
+    background-clip: content-box;
+  }
+}
+
+@layer components {
+  /* ---------------------------------------------------------------- *
+   * Glass
+   * The inset top hairline is what actually reads as VisionOS glass —
+   * without it the panels look like flat translucent rectangles.
+   * ---------------------------------------------------------------- */
+  .glass {
+    position: relative;
+    /* isolate guarantees a stacking context, which is what lets the
+       decorative layers below sit at z-index -1: above the panel's own
+       background, but underneath the panel content. */
+    isolation: isolate;
+    background: var(--glass-bg);
+    /* Standard property only. Writing the -webkit- alias by hand makes
+       Lightning CSS collapse the pair and keep just the prefixed one, which
+       silently disables the blur; it adds the prefixes itself. */
+    backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow:
+      var(--glass-shadow),
+      inset 0 1px 0 var(--glass-inset);
+    border-radius: var(--radius-glass);
+  }
+
+  /* Overlay surfaces (assistant, dialogs, popovers) float over dense page
+     content rather than the smooth backdrop, so they need a denser surface
+     than in-page panels or text shows through from behind. */
+  .glass-overlay {
+    background: var(--glass-overlay-bg);
+    backdrop-filter: blur(40px) saturate(190%);
+  }
+
+  /* Gradient rim light, masked down to the 1px edge. */
+  .glass-rim {
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: var(--glass-rim);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* Pointer-tracked specular sheen. Coordinates come from --mx / --my,
+     set on pointermove by useGlassReflection. */
+  .glass-sheen {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      420px circle at var(--mx, 50%) var(--my, 0%),
+      var(--glass-sheen),
+      transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 500ms var(--ease-out-expo);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .group\/glass:hover .glass-sheen {
+    opacity: 1;
+  }
+
+  /* Film grain. Kills the banding that large dark gradients otherwise show. */
+  .noise-layer {
+    position: absolute;
+    inset: 0;
+    opacity: var(--noise-opacity);
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
+
+  .hairline {
+    background-color: var(--hairline);
+  }
+
+  .text-muted {
+    color: var(--fg-muted);
+  }
+
+  .text-faint {
+    color: var(--fg-faint);
+  }
+
+  /* Numeric figures should not jitter while counting up. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+
+  .display-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+  }
+
+  .gold-text {
+    background: linear-gradient(
+      100deg,
+      var(--color-gold-bright),
+      var(--color-gold) 45%,
+      var(--color-gold-deep)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Fades the edges of horizontal rails so cards dissolve rather than clip. */
+  .rail-mask {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 3%,
+      #000 97%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 3%,
+      #000 97%,
+      transparent
+    );
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+}
+
+/* Respect the OS setting: kill drift, parallax and long transitions. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
