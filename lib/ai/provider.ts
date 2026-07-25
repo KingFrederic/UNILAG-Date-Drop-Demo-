@@ -1,25 +1,6 @@
-/**
- * Assistant provider contract.
- *
- * The shipped implementation is a local simulation — no API key, no network,
- * no cost. It is written against this interface so a real model can replace
- * it by swapping the export below for a route-handler-backed client, without
- * the UI changing at all.
- */
-export interface AssistantContext {
-  runRate: number;
-  realisedIncome: number;
-  netWorth: number;
-  topStream: { title: string; monthly: number } | null;
-  weakestStream: { title: string; monthly: number } | null;
-  activeAgents: number;
-  ideaCount: number;
-}
+import type { AssistantContext, AssistantProvider } from "./context";
 
-export interface AssistantProvider {
-  /** Yields the reply in chunks so the UI can render it as it arrives. */
-  stream(prompt: string, context: AssistantContext): AsyncGenerator<string>;
-}
+export type { AssistantContext, AssistantProvider };
 
 const currency = (value: number) =>
   new Intl.NumberFormat("en-GB", {
@@ -27,6 +8,8 @@ const currency = (value: number) =>
     currency: "GBP",
     maximumFractionDigits: 0,
   }).format(value);
+
+/* ----------------------------- simulation ------------------------------ */
 
 function composeReply(prompt: string, ctx: AssistantContext): string {
   const q = prompt.toLowerCase();
@@ -95,4 +78,85 @@ class SimulatedProvider implements AssistantProvider {
   }
 }
 
-export const assistant: AssistantProvider = new SimulatedProvider();
+export const simulatedAssistant: AssistantProvider = new SimulatedProvider();
+
+/* -------------------------------- live --------------------------------- */
+
+/**
+ * Calls the model through /api/assistant, which holds the credential
+ * server-side. Falls back to the simulation when no key is configured (503),
+ * when the upstream is unreachable, or when the response arrives empty — so
+ * the assistant always answers rather than surfacing an error.
+ *
+ * Fallback only happens if nothing was emitted yet. A stream that fails
+ * part-way keeps what it produced instead of replaying a different answer.
+ */
+let lastReplyLive = false;
+
+/**
+ * Whether the most recent reply actually came from the model. A configured
+ * key that cannot reach the upstream would otherwise leave the UI claiming
+ * "Live" while quietly serving the simulation — which hides a broken key.
+ */
+export function wasLastReplyLive() {
+  return lastReplyLive;
+}
+
+class HybridProvider implements AssistantProvider {
+  async *stream(prompt: string, context: AssistantContext) {
+    let emitted = false;
+
+    try {
+      const response = await fetch("/api/assistant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt, context }),
+      });
+
+      if (response.ok && response.body) {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const text = decoder.decode(value, { stream: true });
+          if (text) {
+            emitted = true;
+            yield text;
+          }
+        }
+
+        const tail = decoder.decode();
+        if (tail) {
+          emitted = true;
+          yield tail;
+        }
+      }
+    } catch {
+      // Network failure — fall through to the simulation below.
+    }
+
+    lastReplyLive = emitted;
+
+    if (!emitted) {
+      yield* simulatedAssistant.stream(prompt, context);
+    }
+  }
+}
+
+export const assistant: AssistantProvider = new HybridProvider();
+
+/** Whether a live model is configured, for labelling the UI honestly. */
+export async function getAssistantMode(): Promise<{
+  live: boolean;
+  model: string | null;
+}> {
+  try {
+    const response = await fetch("/api/assistant", { cache: "no-store" });
+    if (!response.ok) return { live: false, model: null };
+    return await response.json();
+  } catch {
+    return { live: false, model: null };
+  }
+}
