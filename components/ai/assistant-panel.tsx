@@ -5,16 +5,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUp, Sparkles, X } from "lucide-react";
 import { useUIStore } from "@/store/useUIStore";
 import {
-  selectActiveAgents,
-  selectRunRate,
-  useWealthStore,
-} from "@/store/useWealthStore";
-import {
   assistant,
   getAssistantMode,
   wasLastReplyLive,
-  type AssistantContext,
 } from "@/lib/ai/provider";
+import { useAssistantContext } from "@/lib/ai/use-assistant-context";
 import { spring } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -32,11 +27,7 @@ export function AssistantPanel() {
   const addMessage = useUIStore((s) => s.addMessage);
   const updateMessage = useUIStore((s) => s.updateMessage);
 
-  const streams = useWealthStore((s) => s.streams);
-  const goals = useWealthStore((s) => s.goals);
-  const ideas = useWealthStore((s) => s.ideas);
-  const runRate = useWealthStore(selectRunRate);
-  const activeAgents = useWealthStore(selectActiveAgents);
+  const context = useAssistantContext();
 
   const [input, setInput] = React.useState("");
   const [busy, setBusy] = React.useState(false);
@@ -60,23 +51,6 @@ export function AssistantPanel() {
       cancelled = true;
     };
   }, [open]);
-
-  const context: AssistantContext = React.useMemo(() => {
-    const ranked = [...streams].sort((a, b) => b.monthly - a.monthly);
-    const top = ranked[0];
-    const weakest = ranked.filter((s) => s.monthly > 0).at(-1);
-    return {
-      runRate,
-      realisedIncome: goals.find((g) => g.id === "monthly-income")?.current ?? 0,
-      netWorth: goals.find((g) => g.id === "net-worth")?.current ?? 0,
-      topStream: top ? { title: top.title, monthly: top.monthly } : null,
-      weakestStream: weakest
-        ? { title: weakest.title, monthly: weakest.monthly }
-        : null,
-      activeAgents,
-      ideaCount: ideas.length,
-    };
-  }, [streams, goals, ideas, runRate, activeAgents]);
 
   React.useEffect(() => {
     scrollRef.current?.scrollTo({

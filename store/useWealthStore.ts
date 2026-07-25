@@ -44,6 +44,7 @@ interface WealthState {
   reorderIdeas: (from: number, to: number) => void;
   setWidgetOrder: (order: WidgetKey[]) => void;
   toggleAgent: (id: string) => void;
+  reportAgent: (id: string, finding: string, live: boolean) => void;
   advanceRoadmap: () => void;
   reset: () => void;
 }
@@ -118,6 +119,20 @@ export const useWealthStore = create<WealthState>()(
           agents: state.agents.map((agent) =>
             agent.id === id
               ? { ...agent, status: agent.status === "Active" ? "Idle" : "Active" }
+              : agent,
+          ),
+        })),
+
+      reportAgent: (id, finding, live) =>
+        set((state) => ({
+          agents: state.agents.map((agent) =>
+            agent.id === id
+              ? {
+                  ...agent,
+                  lastAction: finding,
+                  lastRunAt: Date.now(),
+                  lastActionLive: live,
+                }
               : agent,
           ),
         })),

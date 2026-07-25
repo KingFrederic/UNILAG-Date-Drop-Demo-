@@ -45,6 +45,10 @@ export interface Agent {
   /** 0–100, drives the load meter. */
   load: number;
   lastAction: string;
+  /** Set once the agent has actually run against the model. */
+  lastRunAt?: number;
+  /** True when lastAction came from the model rather than a scripted line. */
+  lastActionLive?: boolean;
 }
 
 export interface RoadmapStage {
