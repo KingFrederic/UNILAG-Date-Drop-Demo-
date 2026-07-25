@@ -5,11 +5,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUp, Sparkles, X } from "lucide-react";
 import { useUIStore } from "@/store/useUIStore";
 import {
-  selectActiveAgents,
-  selectRunRate,
-  useWealthStore,
-} from "@/store/useWealthStore";
-import { assistant, type AssistantContext } from "@/lib/ai/provider";
+  assistant,
+  getAssistantMode,
+  wasLastReplyLive,
+} from "@/lib/ai/provider";
+import { useAssistantContext } from "@/lib/ai/use-assistant-context";
 import { spring } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -27,32 +27,30 @@ export function AssistantPanel() {
   const addMessage = useUIStore((s) => s.addMessage);
   const updateMessage = useUIStore((s) => s.updateMessage);
 
-  const streams = useWealthStore((s) => s.streams);
-  const goals = useWealthStore((s) => s.goals);
-  const ideas = useWealthStore((s) => s.ideas);
-  const runRate = useWealthStore(selectRunRate);
-  const activeAgents = useWealthStore(selectActiveAgents);
+  const context = useAssistantContext();
 
   const [input, setInput] = React.useState("");
   const [busy, setBusy] = React.useState(false);
+  const [mode, setMode] = React.useState<{
+    live: boolean;
+    model: string | null;
+    /** Key configured, but the last call fell back to the simulation. */
+    degraded: boolean;
+  }>({ live: false, model: null, degraded: false });
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
-  const context: AssistantContext = React.useMemo(() => {
-    const ranked = [...streams].sort((a, b) => b.monthly - a.monthly);
-    const top = ranked[0];
-    const weakest = ranked.filter((s) => s.monthly > 0).at(-1);
-    return {
-      runRate,
-      realisedIncome: goals.find((g) => g.id === "monthly-income")?.current ?? 0,
-      netWorth: goals.find((g) => g.id === "net-worth")?.current ?? 0,
-      topStream: top ? { title: top.title, monthly: top.monthly } : null,
-      weakestStream: weakest
-        ? { title: weakest.title, monthly: weakest.monthly }
-        : null,
-      activeAgents,
-      ideaCount: ideas.length,
+  // Checked once the panel is first opened, so the header can say whether
+  // answers are coming from a real model or the local simulation.
+  React.useEffect(() => {
+    if (!open) return;
+    let cancelled = false;
+    void getAssistantMode().then((next) => {
+      if (!cancelled) setMode({ ...next, degraded: false });
+    });
+    return () => {
+      cancelled = true;
     };
-  }, [streams, goals, ideas, runRate, activeAgents]);
+  }, [open]);
 
   React.useEffect(() => {
     scrollRef.current?.scrollTo({
@@ -81,6 +79,11 @@ export function AssistantPanel() {
         updateMessage(replyId, { content: buffer });
       }
       updateMessage(replyId, { streaming: false });
+      // If a key is configured but the reply came from the simulation, say so
+      // rather than leaving the header claiming a live model.
+      setMode((prev) =>
+        prev.live ? { ...prev, degraded: !wasLastReplyLive() } : prev,
+      );
       setBusy(false);
     },
     [addMessage, updateMessage, context, busy],
@@ -105,10 +108,22 @@ export function AssistantPanel() {
             <span className="grid size-7 place-items-center rounded-full bg-gold/15 text-gold">
               <Sparkles className="size-3.5" />
             </span>
-            <div className="flex-1">
+            <div className="min-w-0 flex-1">
               <p className="text-[13px] font-semibold leading-tight">Assistant</p>
-              <p className="text-[11px] leading-tight text-[var(--fg-faint)]">
-                Reads your live dashboard
+              <p className="truncate text-[11px] leading-tight text-[var(--fg-faint)]">
+                {!mode.live ? (
+                  "Simulated · reads your live dashboard"
+                ) : mode.degraded ? (
+                  <>
+                    <span className="text-danger">Model unreachable</span>
+                    {" · using simulation"}
+                  </>
+                ) : (
+                  <>
+                    <span className="text-success">Live</span>
+                    {mode.model ? ` · ${mode.model.split("/").pop()}` : null}
+                  </>
+                )}
               </p>
             </div>
             <button

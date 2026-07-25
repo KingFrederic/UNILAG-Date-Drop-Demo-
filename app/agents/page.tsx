@@ -1,7 +1,8 @@
 "use client";
 
+import * as React from "react";
 import { motion } from "framer-motion";
-import { Bot } from "lucide-react";
+import { Bot, Loader2, Play } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +10,8 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { useWealthStore, selectActiveAgents } from "@/store/useWealthStore";
 import { useUIStore } from "@/store/useUIStore";
+import { useAgentRunner } from "@/lib/ai/use-agent-runner";
+import { relativeTime } from "@/lib/format";
 import { riseChild, staggerParent } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -17,6 +20,9 @@ export default function AgentsPage() {
   const toggleAgent = useWealthStore((s) => s.toggleAgent);
   const activeCount = useWealthStore(selectActiveAgents);
   const setAssistantOpen = useUIStore((s) => s.setAssistantOpen);
+  const { mode, runningIds, run, runAll } = useAgentRunner();
+
+  const busy = runningIds.size > 0;
 
   return (
     <motion.div variants={staggerParent} initial="hidden" animate="show">
@@ -24,29 +30,59 @@ export default function AgentsPage() {
         title="AI Agents"
         description="Six operators running the parts of the business that are already written down. Agents compound process, not chaos."
         action={
-          <Button variant="primary" onClick={() => setAssistantOpen(true)}>
-            <Bot />
-            Brief the assistant
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              variant="primary"
+              onClick={() => void runAll()}
+              disabled={busy}
+            >
+              {busy ? <Loader2 className="animate-spin" /> : <Play />}
+              {busy ? "Running…" : "Run all agents"}
+            </Button>
+            <Button variant="outline" onClick={() => setAssistantOpen(true)}>
+              <Bot />
+              Brief the assistant
+            </Button>
+          </div>
         }
       />
 
-      <motion.p
+      <motion.div
         variants={riseChild}
-        className="mb-6 px-1 text-[13px] text-[var(--fg-muted)]"
+        className="mb-6 flex flex-wrap items-center gap-2 px-1 text-[13px] text-[var(--fg-muted)]"
       >
-        <span className="font-medium text-[var(--fg)]">
-          {activeCount} of {agents.length}
-        </span>{" "}
-        active. Pausing one is a scheduling decision, not a deletion.
-      </motion.p>
+        <span>
+          <span className="font-medium text-[var(--fg)]">
+            {activeCount} of {agents.length}
+          </span>{" "}
+          active.
+        </span>
+        <Badge
+          tone={!mode.live ? "neutral" : mode.degraded ? "danger" : "success"}
+        >
+          {!mode.live
+            ? "Simulated"
+            : mode.degraded
+              ? "Model unreachable"
+              : `Live · ${mode.model?.split("/").pop() ?? "model"}`}
+        </Badge>
+        <span className="text-[var(--fg-faint)]">
+          {!mode.live
+            ? "Set NVIDIA_API_KEY to have agents reason over your live figures."
+            : mode.degraded
+              ? "Key is configured but the model could not be reached — showing scripted findings."
+              : "Findings are generated against your live figures."}
+        </span>
+      </motion.div>
 
       <div className="grid gap-4 pb-6 sm:grid-cols-2 xl:grid-cols-3">
-        {agents.map((agent) => {
+        {agents.map((agent, index) => {
           const active = agent.status === "Active";
+          const running = runningIds.has(agent.id);
+
           return (
             <motion.div key={agent.id} variants={riseChild}>
-              <GlassPanel lift className="h-full p-5">
+              <GlassPanel lift className="flex h-full flex-col p-5">
                 <div className="flex items-start justify-between gap-3">
                   <span
                     className={cn(
@@ -62,12 +98,14 @@ export default function AgentsPage() {
                     <span
                       className={cn(
                         "size-1.5 rounded-full",
-                        active
-                          ? "animate-pulse-dot bg-success text-success"
-                          : "bg-[var(--fg-faint)]",
+                        running
+                          ? "bg-gold"
+                          : active
+                            ? "animate-pulse-dot bg-success text-success"
+                            : "bg-[var(--fg-faint)]",
                       )}
                     />
-                    {active ? "Active" : "Paused"}
+                    {running ? "Working" : active ? "Active" : "Paused"}
                   </Badge>
                 </div>
 
@@ -93,18 +131,51 @@ export default function AgentsPage() {
                   />
                 </div>
 
-                <p className="mt-4 border-t border-[var(--hairline)] pt-3 text-[11px] leading-snug text-[var(--fg-faint)]">
-                  Last: {agent.lastAction}
-                </p>
+                <div className="mt-4 flex-1 border-t border-[var(--hairline)] pt-3">
+                  <div className="mb-1 flex items-center gap-2">
+                    <span className="text-[10px] uppercase tracking-[0.14em] text-[var(--fg-faint)]">
+                      Latest finding
+                    </span>
+                    {agent.lastActionLive ? (
+                      <span className="text-[9px] uppercase tracking-wider text-success">
+                        live
+                      </span>
+                    ) : null}
+                    {agent.lastRunAt ? (
+                      <span className="ml-auto text-[10px] text-[var(--fg-faint)]">
+                        {relativeTime(agent.lastRunAt)}
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="text-[12px] leading-snug text-[var(--fg-muted)]">
+                    {running ? "Working…" : agent.lastAction}
+                  </p>
+                </div>
 
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => toggleAgent(agent.id)}
-                  className="mt-4 w-full"
-                >
-                  {active ? "Pause agent" : "Resume agent"}
-                </Button>
+                <div className="mt-4 flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => void run(agent, index)}
+                    disabled={!active || running}
+                    className="flex-1"
+                  >
+                    {running ? (
+                      <Loader2 className="animate-spin" />
+                    ) : (
+                      <Play />
+                    )}
+                    Run
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => toggleAgent(agent.id)}
+                    className="flex-1"
+                  >
+                    {active ? "Pause" : "Resume"}
+                  </Button>
+                </div>
               </GlassPanel>
             </motion.div>
           );
