@@ -18,7 +18,7 @@ const EVENTS: Seed[] = [
     tone: "success",
   },
   {
-    title: "YouTube crossed £4,500",
+    title: "YouTube crossed $4,500",
     body: "Third consecutive month of growth. Now your largest single channel.",
     tone: "gold",
   },
@@ -34,7 +34,7 @@ const EVENTS: Seed[] = [
   },
   {
     title: "Emergency fund halfway",
-    body: "£5,000 of £10,000. Roughly three months of runway secured.",
+    body: "$5,000 of $10,000. Roughly three months of runway secured.",
     tone: "success",
   },
   {

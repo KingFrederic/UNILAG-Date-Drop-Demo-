@@ -8,6 +8,7 @@ export interface NavItem {
 
 export const navItems: NavItem[] = [
   { name: "Dashboard", href: "/", icon: "home", shortcut: "d" },
+  { name: "Blueprint", href: "/blueprint", icon: "compass", shortcut: "b" },
   { name: "Goals", href: "/goals", icon: "target", shortcut: "g" },
   { name: "Income", href: "/income", icon: "wallet", shortcut: "i" },
   { name: "Ideas", href: "/ideas", icon: "lightbulb", shortcut: "n" },

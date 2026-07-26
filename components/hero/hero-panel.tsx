@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Compass } from "lucide-react";
 import { MountainScene } from "./mountain-scene";
@@ -7,7 +8,6 @@ import { Roadmap } from "./roadmap";
 import { Button } from "@/components/ui/button";
 import { heroCopy } from "@/data/seed";
 import { useWealthStore, selectRunRate } from "@/store/useWealthStore";
-import { useUIStore } from "@/store/useUIStore";
 import { currency } from "@/lib/format";
 import { riseChild, staggerParent } from "@/lib/motion";
 
@@ -15,7 +15,6 @@ export function HeroPanel() {
   const roadmap = useWealthStore((s) => s.roadmap);
   const advanceRoadmap = useWealthStore((s) => s.advanceRoadmap);
   const runRate = useWealthStore(selectRunRate);
-  const setAssistantOpen = useUIStore((s) => s.setAssistantOpen);
 
   const completed = roadmap.filter((stage) => stage.complete).length;
   const nextStage = roadmap.find((stage) => !stage.complete);
@@ -56,13 +55,11 @@ export function HeroPanel() {
           variants={riseChild}
           className="mt-8 flex flex-wrap items-center gap-3"
         >
-          <Button
-            variant="primary"
-            size="lg"
-            onClick={() => setAssistantOpen(true)}
-          >
-            <Compass />
-            View Blueprint
+          <Button variant="primary" size="lg" asChild>
+            <Link href="/blueprint">
+              <Compass />
+              View Blueprint
+            </Link>
           </Button>
           <Button
             variant="secondary"

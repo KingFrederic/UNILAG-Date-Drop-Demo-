@@ -63,19 +63,21 @@ export const goals: Goal[] = [
     id: "monthly-income",
     title: "Monthly Income",
     current: 3200,
-    goal: 10000,
+    // The blueprint's endpoint: $3M invested at 20% pays $600k/yr.
+    goal: 50000,
     icon: "wallet",
     accent: "gold",
-    cadence: "Realised this month",
+    cadence: "Toward $50,000/mo passive",
   },
   {
     id: "net-worth",
     title: "Net Worth",
     current: 85000,
-    goal: 1000000,
+    // Total to be earned across all streams before the capital is deployed.
+    goal: 5000000,
     icon: "trending-up",
     accent: "success",
-    cadence: "Total assets less liabilities",
+    cadence: "Toward the $5M capital target",
   },
   {
     id: "emergency-fund",

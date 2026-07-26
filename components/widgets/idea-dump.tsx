@@ -21,7 +21,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, Plus, Trash2 } from "lucide-react";
 import { WidgetShell } from "./widget-shell";
 import { Badge } from "@/components/ui/badge";
-import { useWealthStore } from "@/store/useWealthStore";
+import { useIdeaSync } from "@/lib/ideas/use-idea-sync";
 import { cn } from "@/lib/utils";
 import type { Idea } from "@/types";
 
@@ -31,10 +31,15 @@ const STAGE_TONE = {
   Committed: "gold",
 } as const;
 
-function SortableIdea({ idea }: { idea: Idea }) {
-  const removeIdea = useWealthStore((s) => s.removeIdea);
-  const cycleStage = useWealthStore((s) => s.cycleIdeaStage);
-
+function SortableIdea({
+  idea,
+  onRemove,
+  onCycleStage,
+}: {
+  idea: Idea;
+  onRemove: (id: string) => void;
+  onCycleStage: (id: string) => void;
+}) {
   const {
     attributes,
     listeners,
@@ -76,7 +81,7 @@ function SortableIdea({ idea }: { idea: Idea }) {
 
       <button
         type="button"
-        onClick={() => cycleStage(idea.id)}
+        onClick={() => onCycleStage(idea.id)}
         aria-label={`Change stage of ${idea.title}, currently ${idea.stage}`}
       >
         <Badge tone={STAGE_TONE[idea.stage]}>{idea.stage}</Badge>
@@ -84,7 +89,7 @@ function SortableIdea({ idea }: { idea: Idea }) {
 
       <button
         type="button"
-        onClick={() => removeIdea(idea.id)}
+        onClick={() => onRemove(idea.id)}
         aria-label={`Delete ${idea.title}`}
         className="grid size-7 shrink-0 place-items-center rounded-full text-[var(--fg-faint)] opacity-0 transition-all hover:bg-danger/15 hover:text-danger focus-visible:opacity-100 group-hover/idea:opacity-100"
       >
@@ -95,9 +100,7 @@ function SortableIdea({ idea }: { idea: Idea }) {
 }
 
 export function IdeaDump({ handle }: { handle?: React.ReactNode }) {
-  const ideas = useWealthStore((s) => s.ideas);
-  const addIdea = useWealthStore((s) => s.addIdea);
-  const reorderIdeas = useWealthStore((s) => s.reorderIdeas);
+  const { ideas, backend, add, remove, cycleStage, reorder } = useIdeaSync();
   const [draft, setDraft] = React.useState("");
 
   const sensors = useSensors(
@@ -114,20 +117,27 @@ export function IdeaDump({ handle }: { handle?: React.ReactNode }) {
     const from = ideas.findIndex((idea) => idea.id === active.id);
     const to = ideas.findIndex((idea) => idea.id === over.id);
     if (from === -1 || to === -1) return;
-    reorderIdeas(from, to);
+    void reorder(from, to);
   };
 
   const submit = (event: React.FormEvent) => {
     event.preventDefault();
     if (!draft.trim()) return;
-    addIdea(draft);
+    void add(draft);
     setDraft("");
   };
+
+  const where =
+    backend === "remote"
+      ? "saved to your database"
+      : backend === "local"
+        ? "saved in this browser"
+        : "checking storage";
 
   return (
     <WidgetShell
       title="Idea Dump"
-      caption={`${ideas.length} in the queue · drag to prioritise`}
+      caption={`${ideas.length} in the queue · ${where}`}
       handle={handle}
     >
       <form onSubmit={submit} className="mb-3 flex items-center gap-2">
@@ -160,7 +170,12 @@ export function IdeaDump({ handle }: { handle?: React.ReactNode }) {
         >
           <ul className="space-y-1.5">
             {ideas.map((idea) => (
-              <SortableIdea key={idea.id} idea={idea} />
+              <SortableIdea
+                key={idea.id}
+                idea={idea}
+                onRemove={(id) => void remove(id)}
+                onCycleStage={(id) => void cycleStage(id)}
+              />
             ))}
           </ul>
         </SortableContext>
