@@ -40,6 +40,8 @@ interface WealthState {
   ) => void;
   addIdea: (title: string) => void;
   removeIdea: (id: string) => void;
+  /** Wholesale replacement, used when the backend is the source of truth. */
+  replaceIdeas: (ideas: Idea[]) => void;
   cycleIdeaStage: (id: string) => void;
   reorderIdeas: (from: number, to: number) => void;
   setWidgetOrder: (order: WidgetKey[]) => void;
@@ -99,6 +101,8 @@ export const useWealthStore = create<WealthState>()(
       removeIdea: (id) =>
         set((state) => ({ ideas: state.ideas.filter((idea) => idea.id !== id) })),
 
+      replaceIdeas: (ideas) => set({ ideas }),
+
       cycleIdeaStage: (id) =>
         set((state) => ({
           ideas: state.ideas.map((idea) => {
@@ -153,7 +157,31 @@ export const useWealthStore = create<WealthState>()(
     {
       name: "path-to-wealth:v1",
       storage: createJSONStorage(() => localStorage),
-      version: 1,
+      version: 2,
+      /**
+       * v1 stored goals in GBP against interim targets ($10k/mo, $1M net
+       * worth). v2 re-bases them onto the blueprint. Without this, anyone who
+       * had already opened the app would keep the old targets forever, since
+       * persisted state wins over the seed.
+       */
+      migrate: (persisted, fromVersion) => {
+        const state = persisted as Partial<WealthState> | undefined;
+        // Nothing stored, or already migrated: hand back whatever we got and
+        // let zustand merge it over the defaults.
+        if (!state) return persisted as WealthState;
+        if (fromVersion >= 2) return persisted as WealthState;
+
+        return {
+          ...state,
+          goals: (state.goals ?? seedGoals).map((goal) => {
+            const rebased = seedGoals.find((seed) => seed.id === goal.id);
+            // Keep whatever progress they had; adopt the new target and copy.
+            return rebased
+              ? { ...goal, goal: rebased.goal, cadence: rebased.cadence }
+              : goal;
+          }),
+        } as WealthState;
+      },
       /**
        * Rehydration is deferred to StoreHydration so the first client render
        * matches the server render. Without this, localStorage values would be

@@ -142,10 +142,10 @@ export function sseToText(upstream: ReadableStream<Uint8Array>) {
   );
 }
 
-const gbp = new Intl.NumberFormat("en-GB", {
+const usd = new Intl.NumberFormat("en-US", {
   style: "currency",
-  currency: "GBP",
+  currency: "USD",
   maximumFractionDigits: 0,
 });
 
-export const money = (value: number) => gbp.format(value);
+export const money = (value: number) => usd.format(value);

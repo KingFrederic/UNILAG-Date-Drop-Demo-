@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { PageHeader } from "@/components/layout/page-header";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -124,9 +125,20 @@ export default function IncomePage() {
                     </span>
 
                     <div className="min-w-[130px] flex-1">
-                      <p className="text-[14px] font-medium">{stream.title}</p>
+                      <Link
+                        href={`/income/${stream.id}`}
+                        className="text-[14px] font-medium transition-colors hover:text-gold"
+                      >
+                        {stream.title}
+                      </Link>
                       <p className="tabular text-[11px] text-[var(--fg-faint)]">
-                        {share.toFixed(1)}% of run-rate
+                        {share.toFixed(1)}% of run-rate ·{" "}
+                        <Link
+                          href={`/income/${stream.id}`}
+                          className="transition-colors hover:text-gold"
+                        >
+                          playbook
+                        </Link>
                       </p>
                     </div>
 
@@ -154,7 +166,7 @@ export default function IncomePage() {
                         {stream.title} monthly revenue
                       </span>
                       <span className="text-[13px] text-[var(--fg-faint)]">
-                        £
+                        $
                       </span>
                       <input
                         type="number"

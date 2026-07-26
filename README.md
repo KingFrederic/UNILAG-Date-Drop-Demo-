@@ -65,11 +65,17 @@ data/         seed data
 
 ## Notes on the implementation
 
-**Data is local.** Goals, streams, ideas and panel order live in Zustand and
-persist to `localStorage` under `path-to-wealth:v1`. There is no backend and
-nothing leaves the browser. The store is created with `skipHydration` and
-rehydrated in `components/providers.tsx`, so the first client render matches
-the server's. Settings → Reset restores the seed data.
+**Data is local by default.** Goals, streams and panel order live in Zustand
+and persist to `localStorage` under `path-to-wealth:v1`. The store is created
+with `skipHydration` and rehydrated in `components/providers.tsx`, so the first
+client render matches the server's. Settings → Reset restores the seed data.
+
+**Ideas can persist properly.** Set `SUPABASE_URL` and
+`SUPABASE_SERVICE_ROLE_KEY` and the idea board writes to Postgres instead, so
+ideas follow you between devices — run `supabase/migrations/0001_ideas.sql`
+first. Without those variables it falls back to localStorage, and the widget
+says which of the two is in effect rather than leaving you guessing. The
+Supabase credential is read server-side only (`app/api/ideas`).
 
 **The assistant runs live or simulated.** With `NVIDIA_API_KEY` set it answers
 through NVIDIA NIM; without it, `lib/ai/provider.ts` streams a scripted reply
@@ -113,10 +119,33 @@ focus rings, Radix for dialog and tooltip focus management, and
 `prefers-reduced-motion` honoured throughout — including the backdrop parallax
 and every count-up.
 
+## The blueprint
+
+`/blueprint` is the plan the dashboard measures against:
+
+> Earn **$5,000,000** across multiple income streams over roughly three years.
+> Deploy **$3,000,000** of it at a targeted **20%** annual return.
+> Live on the **$600,000/yr** — **$50,000/mo** — that the capital produces.
+
+The goal tracker is re-based onto that: the monthly income target is $50,000
+and the net worth target is $5,000,000.
+
+The page lays out five *independent* routes to $5M — each of which reaches the
+target on its own, so no single bet has to come in — plus three-year phasing
+and a per-stream playbook. Every stream tile on the dashboard opens its own
+playbook at `/income/<stream>`: unit maths, phasing, launch steps, platforms,
+and for digital products and print-on-demand, concrete title and slogan
+suggestions with the audiences that buy them first.
+
+**The 20% assumption is stated, not buried.** It is well above the long-run
+market average of roughly 7–10%, and it is the number the whole plan is most
+sensitive to, so the blueprint shows what the same $3M pays at 7%, 10%, 15%
+and 20% side by side.
+
 ## A note on the numbers
 
-The goal tracker's "Monthly Income" (£3,200) and the streams' combined total
-(£26,700/mo) measure different things and are labelled as such: the goal card
+The goal tracker's "Monthly Income" ($3,200) and the streams' combined total
+($26,700/mo) measure different things and are labelled as such: the goal card
 tracks **realised** income, while the streams rail reports a **combined
 run-rate**. Editing any stream flows through the totals, the charts and the
 assistant's answers immediately.

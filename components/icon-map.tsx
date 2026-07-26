@@ -1,6 +1,7 @@
 import {
   Bot,
   Briefcase,
+  Compass,
   ChartLine,
   Cloud,
   Cpu,
@@ -33,6 +34,7 @@ import {
  */
 export const iconMap = {
   home: House,
+  compass: Compass,
   target: Target,
   wallet: Wallet,
   lightbulb: Lightbulb,

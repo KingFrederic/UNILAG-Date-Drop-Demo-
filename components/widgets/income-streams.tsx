@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -113,10 +114,15 @@ export function IncomeStreams() {
               variants={riseChild}
               className="w-[248px] shrink-0 snap-start"
             >
-              <GlassPanel
-                lift
-                className="h-full rounded-[var(--radius-panel)] p-4"
+              <Link
+                href={`/income/${stream.id}`}
+                aria-label={`${stream.title} launch playbook`}
+                className="block h-full"
               >
+                <GlassPanel
+                  lift
+                  className="h-full rounded-[var(--radius-panel)] p-4"
+                >
                 <div className="flex items-start justify-between gap-2">
                   <span
                     className={cn(
@@ -164,7 +170,8 @@ export function IncomeStreams() {
                     {delta.toFixed(1)}%
                   </span>
                 </div>
-              </GlassPanel>
+                </GlassPanel>
+              </Link>
             </motion.div>
           );
         })}

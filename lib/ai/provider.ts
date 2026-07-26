@@ -3,9 +3,9 @@ import type { AssistantContext, AssistantProvider } from "./context";
 export type { AssistantContext, AssistantProvider };
 
 const currency = (value: number) =>
-  new Intl.NumberFormat("en-GB", {
+  new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "GBP",
+    currency: "USD",
     maximumFractionDigits: 0,
   }).format(value);
 
