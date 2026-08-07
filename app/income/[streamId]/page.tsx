@@ -8,6 +8,7 @@ import { ArrowLeft, Check, TriangleAlert } from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
 import { Sparkline } from "@/components/widgets/sparkline";
+import { KdpCatalog } from "@/components/playbook/kdp-catalog";
 import { resolveIcon } from "@/components/icon-map";
 import { playbookFor } from "@/data/playbooks";
 import { useWealthStore } from "@/store/useWealthStore";
@@ -250,6 +251,14 @@ export default function StreamPlaybookPage() {
               </GlassPanel>
             </motion.div>
           </div>
+
+          {/* The digital products stream has a real catalogue behind it, so
+              show it rather than leaving the plan abstract. */}
+          {streamId === "digital-products" ? (
+            <motion.div variants={riseChild}>
+              <KdpCatalog />
+            </motion.div>
+          ) : null}
 
           {/* ---------------------------- suggestions ---------------------------- */}
           {playbook.suggestions ? (
