@@ -137,6 +137,14 @@ playbook at `/income/<stream>`: unit maths, phasing, launch steps, platforms,
 and for digital products and print-on-demand, concrete title and slogan
 suggestions with the audiences that buy them first.
 
+The digital products playbook carries the **KDP publishing catalogue** — 20
+categories × 10 books = 200 pre-written, strategy-tagged titles, filterable by
+division and expandable per category, with each category's BSR range, review
+threshold and production tip. The source workbook is downloadable from the
+page. `data/kdp-catalog.ts` is generated from
+`public/KDP_Catalog_Tracker.xlsx`; regenerate both together if the workbook
+changes.
+
 **The 20% assumption is stated, not buried.** It is well above the long-run
 market average of roughly 7–10%, and it is the number the whole plan is most
 sensitive to, so the blueprint shows what the same $3M pays at 7%, 10%, 15%
