@@ -29,6 +29,12 @@ export interface PhasePlan {
 export interface Suggestion {
   title: string;
   detail: string;
+  /** Product mockup, where one exists. Path under public/. */
+  image?: string;
+  imageAlt?: string;
+  /** Intrinsic dimensions, so next/image can reserve space and avoid CLS. */
+  imageWidth?: number;
+  imageHeight?: number;
 }
 
 export interface Playbook {
@@ -150,6 +156,11 @@ export const playbooks: Playbook[] = [
         {
           title: "Jesus Must Be Heard Across The World",
           detail: "Faith apparel is the most reliable repeat category. Church bulk orders convert without ads.",
+          image: "/statements/jesus-must-be-heard.webp",
+          imageAlt:
+            "Black oversized tee printed with 'Jesus Must Be Heard Across The World' in cream and gold above a world map, shown on a model and as a flat product shot.",
+          imageWidth: 1200,
+          imageHeight: 960,
         },
         {
           title: "African And Proud",

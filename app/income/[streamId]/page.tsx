@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 import { motion } from "framer-motion";
@@ -267,16 +268,33 @@ export default function StreamPlaybookPage() {
                 <h2 className="text-[15px] font-semibold">
                   {playbook.suggestions.heading}
                 </h2>
-                <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
+                {/* items-start stops the row partner of a tall card (one with
+                    a mockup) from being stretched to match its height. */}
+                <ul className="mt-5 grid items-start gap-2.5 sm:grid-cols-2">
                   {playbook.suggestions.items.map((item) => (
                     <li
                       key={item.title}
-                      className="rounded-2xl border border-[var(--glass-border)] bg-white/6 p-4 dark:bg-white/4"
+                      className="overflow-hidden rounded-2xl border border-[var(--glass-border)] bg-white/6 dark:bg-white/4"
                     >
-                      <p className="text-[13px] font-medium">{item.title}</p>
-                      <p className="mt-1 text-[12px] leading-relaxed text-[var(--fg-faint)]">
-                        {item.detail}
-                      </p>
+                      {item.image ? (
+                        // sizes must match the rendered width or Next serves
+                        // too small a source and the mockup looks soft: this
+                        // is one column of a two-column grid inside the panel.
+                        <Image
+                          src={item.image}
+                          alt={item.imageAlt ?? item.title}
+                          width={item.imageWidth ?? 1200}
+                          height={item.imageHeight ?? 960}
+                          sizes="(min-width: 640px) 600px, 100vw"
+                          className="h-auto w-full border-b border-[var(--hairline)]"
+                        />
+                      ) : null}
+                      <div className="p-4">
+                        <p className="text-[13px] font-medium">{item.title}</p>
+                        <p className="mt-1 text-[12px] leading-relaxed text-[var(--fg-faint)]">
+                          {item.detail}
+                        </p>
+                      </div>
                     </li>
                   ))}
                 </ul>
