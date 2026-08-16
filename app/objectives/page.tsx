@@ -15,7 +15,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
 import { resolveIcon } from "@/components/icon-map";
-import { objectives, objectiveTotals } from "@/data/objectives";
+import { objectives, objectiveTotals, profile } from "@/data/objectives";
 import { riseChild, spring, staggerParent } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -38,12 +38,58 @@ export default function ObjectivesPage() {
         }
       />
 
+      {/* The advice below is keyed to these credentials, so show them —
+          otherwise it reads as generic when it is deliberately not. */}
+      <motion.div variants={riseChild} className="mb-6">
+        <GlassPanel className="p-6">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-[10px] uppercase tracking-[0.16em] text-[var(--fg-faint)]">
+                Written against
+              </p>
+              <p className="mt-1 text-[15px] font-semibold">{profile.name}</p>
+              <p className="text-[12px] text-[var(--fg-muted)]">
+                {profile.title} · {profile.based}
+              </p>
+              <p className="mt-1 text-[12px] text-[var(--fg-faint)]">
+                {profile.degree} · {profile.experience}
+              </p>
+            </div>
+            <ul className="flex flex-wrap gap-1.5">
+              {profile.languages.map((language) => (
+                <li key={language.name}>
+                  <Badge tone={language.name === "French" ? "gold" : "neutral"}>
+                    {language.name} · {language.level}
+                  </Badge>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mt-5 border-t border-[var(--hairline)] pt-4">
+            <p className="mb-2 text-[10px] uppercase tracking-[0.16em] text-[var(--fg-faint)]">
+              What actually gives you leverage
+            </p>
+            <ul className="grid gap-1.5 sm:grid-cols-2">
+              {profile.leverage.map((item) => (
+                <li key={item} className="flex gap-2.5">
+                  <span className="mt-[7px] size-1 shrink-0 rounded-full bg-gold" />
+                  <p className="text-[12px] leading-relaxed text-[var(--fg-muted)]">
+                    {item}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </GlassPanel>
+      </motion.div>
+
       <motion.p
         variants={riseChild}
         className="mb-6 max-w-3xl px-1 text-[13px] leading-relaxed text-[var(--fg-muted)]"
       >
         {objectiveTotals.count} objectives · {objectiveTotals.moves} concrete
-        moves. Where a licensing rule, citizenship gate or alumni-status quirk
+        moves. Where a licensing rule, immigration cutoff or alumni-status quirk
         decides whether a path is open at all, it is called out as a gate and
         sourced — those are the details that quietly waste years.
       </motion.p>
