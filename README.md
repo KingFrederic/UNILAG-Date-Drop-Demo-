@@ -150,6 +150,21 @@ market average of roughly 7–10%, and it is the number the whole plan is most
 sensitive to, so the blueprint shows what the same $3M pays at 7%, 10%, 15%
 and 20% side by side.
 
+## Personal objectives
+
+`/objectives` covers the half of the plan money doesn't buy: the diplomatic
+ladder in Canada, a law credential, clubs and memberships, hosting, a Harvard
+programme, and church. Each objective separates the **published route** from
+the **faster door**, and leads with *gates* — the citizenship requirement, the
+March 2026 NCA rule change, the fact that short Harvard executive courses
+confer no alumni status. Those are the details that quietly waste years, so
+they are sourced.
+
+`/learning/networking` is the networking curriculum: ten modules from where to
+meet people through to networking upward, with verbatim scripts, the specific
+way each module goes wrong, and a drill per module. There is a one-page
+version at the top for when the full thing is too much.
+
 ## A note on the numbers
 
 The goal tracker's "Monthly Income" ($3,200) and the streams' combined total

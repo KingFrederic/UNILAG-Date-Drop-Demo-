@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
+import { Users } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Progress, ProgressRing } from "@/components/ui/progress";
@@ -21,6 +23,15 @@ export default function LearningPage() {
       <PageHeader
         title="Learning"
         description="Skills are the only asset that compounds before you have capital. These four are the ones currently paying rent."
+        action={
+          <Link
+            href="/learning/networking"
+            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-b from-gold-bright to-gold px-4 py-2 text-[13px] font-semibold text-[#241a06] shadow-[0_10px_30px_-8px_rgba(245,184,78,0.65)] transition-transform hover:-translate-y-0.5"
+          >
+            <Users className="size-4" />
+            Networking curriculum
+          </Link>
+        }
       />
 
       <div className="space-y-6 pb-6">
