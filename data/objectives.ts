@@ -1,10 +1,41 @@
 /**
  * Personal objectives — the non-financial half of the plan.
  *
- * Researched August 2026. Where a fact is load-bearing (a licensing rule, an
- * alumni-status quirk, a citizenship gate) it carries a source, because these
- * are the details that decide whether a path is open at all.
+ * Researched August 2026 and written against the actual credentials on
+ * fredericidowu.com rather than a generic profile. Where a fact is
+ * load-bearing (a licensing rule, an immigration cutoff, an alumni-status
+ * quirk) it carries a source, because these are the details that decide
+ * whether a path is open at all.
  */
+
+/** Pulled from fredericidowu.com — the objectives below are keyed to these. */
+export const profile = {
+  name: "Frédéric Idowu Oluwasola",
+  title: "Diplomatic Bilingual Communication Specialist",
+  based: "Lagos · California",
+  degree: "B.A. French Studies, University of Lagos",
+  languages: [
+    { name: "English", level: "Native" },
+    { name: "French", level: "Fluent · B.A." },
+    { name: "Yoruba", level: "Native" },
+    { name: "Dioula", level: "Conversational" },
+    { name: "Pidgin", level: "Native" },
+  ],
+  experience: "7+ years · 12+ nations",
+  institutions: [
+    "African Union",
+    "GIZ",
+    "Federal Ministry of Art, Culture & Creative Economy",
+    "AfroAngle (California)",
+  ],
+  /** The assets that actually move these objectives, named plainly. */
+  leverage: [
+    "Fluent French with a degree in it — the single highest-value asset on this page",
+    "Multilateral track record: AU and GIZ programme work across 12+ countries",
+    "Professional bilingual MC, conference and ministerial interpreter",
+    "Federal government flagship delivered (Reimagining Hope Residency)",
+  ],
+};
 
 export interface Move {
   title: string;
@@ -50,94 +81,119 @@ export const objectives: Objective[] = [
     outcome:
       "A posting, or a seat close enough to the table that postings come to you.",
     premise:
-      "Canada's foreign service has one narrow front door and several unlocked side doors. The front door is a periodic, heavily oversubscribed recruitment campaign. The side doors — missions hiring locally, international organisations headquartered on Canadian soil, and the wider federal public service — hire continuously and are how a large share of people actually end up inside the tent.",
+      "You are in Lagos and California, so the ladder is not the first problem — getting to Canada is. The good news is that your profile is close to the ideal case for the cheapest door into the country. Canada is short of French speakers outside Quebec and has built three separate programmes to fix that, all of which you qualify for and most applicants do not. Your B.A. in French Studies, your AU and GIZ programme record, and your interpreting work are not background colour here; they are the qualification.",
     gates: [
       {
-        label: "Canadian citizenship",
+        label: "Residency before the ladder — this is objective zero",
         detail:
-          "Rotational foreign service officer roles are open to Canadian citizens. Permanent residence is not enough for the FSO stream, though it is often enough for locally engaged and adjacent roles. If citizenship is not yet in hand, its timeline is the real critical path for this objective — everything else can be built in parallel.",
+          "Everything below assumes you are physically in Canada with status. You are not yet, so the immigration route is the critical path and nothing on this page moves until it does. Treat the next twelve months as an immigration project with a diplomacy objective attached, not the reverse.",
         blocking: true,
+      },
+      {
+        label: "Citizenship gates the front door, not the country",
+        detail:
+          "Rotational foreign service officer roles at Global Affairs are open to Canadian citizens, which is roughly PR plus three years of physical presence. So the FSO competition is a five-to-six-year horizon from today. Everything else — locally engaged roles, the wider public service, multilateral bodies — opens far earlier, most of it at PR.",
+        blocking: true,
+      },
+      {
+        label: "Your French is the asset, not the gap",
+        detail:
+          "This is the correction that matters. Most people chasing this path spend years getting to a usable French level. You teach TEF, TCF and DELF preparation for a living. Sit a certified TEF Canada or TCF Canada test in the next ninety days and convert the fluency you already have into points on a file — untested, it is worth nothing to IRCC.",
+        blocking: false,
       },
       {
         label: "Security clearance",
         detail:
-          "Secret or Top Secret depending on the role. Long lead time and it looks at foreign travel, finances and associations. Nothing to fear, but start early and keep your affairs tidy.",
-        blocking: false,
-      },
-      {
-        label: "French",
-        detail:
-          "The single highest-leverage skill on this entire path. Bilingual-imperative postings shrink the applicant pool dramatically, and a CBC-level profile changes which competitions you can even enter. Treat French as infrastructure, not a nice-to-have.",
+          "Secret or Top Secret depending on the role, with a long lead time and scrutiny of foreign travel, finances and associations. Twelve nations of work history is not a problem, but it is a longer file to process. Keep records tidy from now.",
         blocking: false,
       },
       {
         label: "Rotationality",
         detail:
-          "Moving every 2–4 years is a condition of employment, not a perk you opt into. Decide now whether that fits the life you are building, because it shapes everything else on this list.",
+          "Moving every 2–4 years is a condition of employment, not a perk. Worth deciding against the church, clubs and hosting objectives, all of which reward staying put.",
         blocking: false,
       },
     ],
     moves: [
       {
-        title: "Set the recruitment alert and treat the campaign as an exam",
+        title: "Sit TEF Canada or TCF Canada — the highest-value 90 days available to you",
         detail:
-          "Foreign service recruitment runs periodically rather than continuously. Create a GC Jobs account, set alerts, and follow Global Affairs on LinkedIn. When a campaign opens the window is short and the screening is standardised — people who prepared for the assessments beat people who merely applied.",
+          "In 2026 the French-language Express Entry category draws have been cutting off around CRS 391–399, against 514–525 for general draws. That is roughly a 120-point advantage, and it exists specifically for people like you. Untested French is worth zero on a file; a certified result converts a degree you already hold into the cheapest permanent residence route Canada offers. Nothing else on this page has this return per unit of effort.",
         kind: "conventional",
-        horizon: "This week, then whenever the campaign opens",
+        horizon: "Book this month, sit within 90 days",
       },
       {
-        title: "Get into the federal public service anywhere, then deploy across",
+        title: "Francophone Community Immigration Pilot — direct PR, no CRS at all",
         detail:
-          "The hardest boundary is outside-to-inside, not department-to-department. Once you hold a substantive federal position, internal deployments, secondments and Interchange Canada assignments open up that are invisible from outside. Policy analyst roles in any department are a legitimate on-ramp.",
+          "Launched January 2026 as successor to the Rural and Northern pilot. Six designated francophone communities outside Quebec, direct permanent residence, no Express Entry pool and no CRS score involved. It is heavily under-used because few applicants have real French. You do. If a job offer in one of the six communities is obtainable, this is faster and more certain than the points system.",
         kind: "unconventional",
         horizon: "6–18 months",
       },
       {
-        title: "Work a mission as locally engaged staff",
+        title: "Mobilité Francophone — an LMIA-exempt work permit",
         detail:
-          "Missions hire locally engaged staff through their own postings, separately from the national FSO campaign, and the competition is a fraction of the size. It is real diplomatic work, real references, and a real view of how the machine operates.",
+          "Exemption code C16 under the International Mobility Program. A French-speaking foreign national can be hired by an employer anywhere outside Quebec without that employer needing a Labour Market Impact Assessment — which removes the single biggest reason Canadian employers decline foreign candidates. It gets you into the country on a work permit while a PR application runs in parallel.",
         kind: "unconventional",
         horizon: "3–12 months",
       },
       {
-        title: "Use the international organisations already on Canadian soil",
+        title: "Target la Francophonie and the bodies already on Canadian soil",
         detail:
-          "Montreal hosts ICAO. Canada is an active member of the Commonwealth and la Francophonie. You do not have to leave the country to hold a multilateral role, and multilateral experience reads extremely well on a foreign-service file.",
+          "Canada is an active member of the Organisation internationale de la Francophonie, and Montreal hosts ICAO. Your AU and GIZ programme experience plus working French is an unusually good fit for francophone multilateral work — and it is the same institutional world you already operate in, simply relocated. This is continuity, not a career change.",
         kind: "unconventional",
         horizon: "6–24 months",
       },
       {
-        title: "Become publishable on one region or one file",
+        title: "Get into the federal public service anywhere, then deploy across",
         detail:
-          "Pick a narrow lane — Nigeria–Canada trade, West African security, diaspora remittance policy — and publish in it consistently. The Canadian International Council, CIGI and the Canadian Global Affairs Institute all take outside contributors. A search for your name returning three serious pieces on one file is worth more than a general-purpose CV.",
+          "The hard boundary is outside-to-inside, not department-to-department. Once you hold a substantive federal position, internal deployments and secondments open up that are invisible from outside. Bilingual-imperative positions have a far smaller applicant pool, and you can enter those competitions on day one where most candidates cannot.",
         kind: "unconventional",
-        horizon: "3–12 months, compounding",
+        horizon: "After landing, 6–18 months",
       },
       {
-        title: "Get adjacent to political staff",
+        title: "Publish on the file only you can write",
         detail:
-          "Ministerial exempt staff, constituency work and party policy committees sit beside the appointment process and are entered on relationships rather than competitions. This is a genuinely faster ladder, and an openly political one — go in clear-eyed that it ties your trajectory to a party's fortunes.",
+          "Not general foreign policy — the intersection nobody else occupies: anglophone-francophone Africa, Canada–West Africa relations, the Ejigbo diaspora work you have already done. The Canadian International Council, CIGI and the Canadian Global Affairs Institute take outside contributors. You have primary field material from five nations; almost no one competing for these roles does.",
         kind: "unconventional",
-        horizon: "12–36 months",
+        horizon: "Start now, compounding",
       },
       {
-        title: "Take an honorary consul appointment for a smaller state",
+        title: "Keep MC-ing — it is diplomatic networking that pays you",
         detail:
-          "Honorary consuls are typically established local figures appointed by a sending state with light representation needs. It confers genuine standing in the diplomatic corps and an invitation list that is otherwise closed. It is a later-stage move that requires you to already be someone worth appointing.",
+          "You already host diplomatic galas, moderate ministerial roundtables and interpret at conferences. That is not adjacent to the objective, it is the objective performed at a lower altitude. Move that work toward Canada–Africa events, francophone business councils and diaspora forums, and you will be visible to exactly the right people while being paid to be in the room.",
         kind: "unconventional",
-        horizon: "3–7 years",
+        horizon: "Immediately, ongoing",
+      },
+      {
+        title: "Honorary consul, later",
+        detail:
+          "Sending states appoint established local figures with light representation needs — and a francophone West African state appointing a fluent Yoruba, French and Dioula speaker with AU credentials is a natural fit. It confers real standing in the diplomatic corps. A five-to-seven-year move that requires you to already be someone worth appointing.",
+        kind: "unconventional",
+        horizon: "5–7 years",
       },
     ],
     firstAction:
-      "Resolve the citizenship timeline in writing this week — it gates the front door and nothing else on this list can substitute for it. Then book a French assessment to find your true baseline rather than your assumed one.",
+      "Book TEF Canada or TCF Canada this month. It is the one action that converts what you already are into what the system can score, and it unlocks a PR route running roughly 120 CRS points cheaper than the one most applicants are fighting over. Everything else on this objective waits behind it.",
     sources: [
+      {
+        label: "French-language Express Entry draw, CRS cutoff 391 (August 2026)",
+        url: "https://immigration.ca/canada-invites-5000-french-speaking-candidates-express-entry-crs-391-august-6-2026/",
+      },
+      {
+        label: "French-language draw cutoff dips below 400 — CIC News",
+        url: "https://www.cicnews.com/2026/07/french-language-express-entry-draw-sees-crs-cutoff-dip-below-400-0778376.html",
+      },
+      {
+        label: "Francophone Community Immigration Pilot 2026",
+        url: "https://www.ansariimmigration.com/post/francophone-community-immigration-pilot-fcip-who-qualifies-and-how-to-apply-in-2026",
+      },
+      {
+        label: "Francophone Mobility Program (C16) — LMIA-exempt work permit",
+        url: "https://moving2canada.com/work/work-permits/francophone-mobility-program/",
+      },
       {
         label: "A career in the Canadian Foreign Service — Global Affairs Canada",
         url: "https://international.canada.ca/en/global-affairs/corporate/jobs/careers-foreign-service",
-      },
-      {
-        label: "Job opportunities — Global Affairs Canada",
-        url: "https://international.canada.ca/en/global-affairs/corporate/jobs/opportunities",
       },
     ],
   },
@@ -151,66 +207,66 @@ export const objectives: Objective[] = [
     outcome:
       "Either a licence to practise, or a credential that makes legal rooms open to you.",
     premise:
-      "These are two different objectives and they take completely different routes. Deciding which one you actually want collapses a confusing landscape into a single obvious path. I could not read your credentials, so this is a fork rather than a recommendation — answer the first question and the rest follows.",
+      "Your degree is a B.A. in French Studies, which settles this: the NCA route is closed to you, because it assesses legal education obtained abroad and is not an entry point for non-lawyers. That is not a setback — it removes the slowest and most expensive option from the board. What remains are three genuinely different things, and only one of them is aimed at what you actually said you wanted, which was access to rooms.",
     gates: [
       {
-        label: "Do you already hold a law degree from outside Canada?",
+        label: "The NCA route is not available to you",
         detail:
-          "If yes, your route is the NCA. If no, you cannot enter it — the NCA assesses legal education obtained abroad, it is not an entry route for non-lawyers.",
+          "It assesses law degrees earned outside Canada. A B.A. in French Studies is not one, so this door — and the Osgoode LLM built around satisfying its requirements — is closed. Worth knowing before anyone sells you an LLM as a shortcut to practising.",
         blocking: true,
       },
       {
-        label: "New as of March 2026",
+        label: "Practising means starting from scratch",
         detail:
-          "The NCA added mandatory language screening and a standalone Indigenous Law and Peoples knowledge requirement. Anyone working from pre-2026 guidance is planning against rules that no longer apply.",
+          "A JD is three years full-time. An Ontario paralegal licence is 18 months to two years. Both are real routes, and both are a career change rather than an addition. Weigh that against the fact that your existing career is already in the rooms you say you want to enter.",
         blocking: false,
       },
       {
-        label: "An LLM is not a licence",
+        label: "For context if it ever becomes relevant",
         detail:
-          "Osgoode states plainly that completing its Professional LLM in Canadian Common Law does not by itself entitle you to practise or to be called to the bar. It is a way to satisfy NCA subject requirements with teaching and support attached — valuable, but not the finish line.",
+          "As of March 2026 the NCA added mandatory language screening and a standalone Indigenous Law and Peoples requirement. Only relevant if you ever acquire a foreign law degree — noted so you are not planning from stale information later.",
         blocking: false,
       },
     ],
     moves: [
       {
-        title: "Route A — foreign law degree, want to practise: the NCA",
+        title: "The one I would actually do — Queen's Certificate in Law",
         detail:
-          "Apply to the National Committee on Accreditation for assessment. You receive a set of subject requirements, satisfy them by challenge exam or coursework, obtain the Certificate of Qualification, then enter a provincial licensing process — articling and bar exams. Realistic end to end: two to four years part-time.",
-        kind: "conventional",
-        horizon: "2–4 years",
-      },
-      {
-        title: "Route A+ — the same route with scaffolding",
-        detail:
-          "Osgoode's Professional LLM in Canadian Common Law is built around NCA subject requirements and adds career and cultural support for internationally trained lawyers. It requires at least two years of professional experience. Faster and far less lonely than self-studying for challenge exams, and it puts you in a cohort that becomes a network.",
-        kind: "conventional",
-        horizon: "1 year full-time",
-      },
-      {
-        title: "Route B — no law degree, want to practise: paralegal licence",
-        detail:
-          "Ontario is the only province that licenses paralegals as independent practitioners. Complete a Law Society-accredited paralegal programme, pass the licensing exam, meet the good character requirement. This is by a wide margin the fastest legitimate route to actually practising, within a defined scope.",
-        kind: "unconventional",
-        horizon: "18 months–2 years",
-      },
-      {
-        title: "Route C — you want the rooms, not the licence",
-        detail:
-          "Queen's Certificate in Law is online, designed explicitly for people with no legal background, and covers constitutional, criminal, tort, contract, property, corporate, workplace, IP and international law across seven courses at your own pace. For credibility in policy and diplomatic rooms this is the highest return per hour on this entire page — and it is the route most people overlook because it does not end in a title.",
+          "Online, from a real law faculty, designed explicitly for people with no legal background. Seven courses covering constitutional, criminal, tort, contract, property, corporate, workplace, IP and international law, at your own pace. For someone who interprets at ministerial level and drafts institutional messaging, this is the missing vocabulary — and it is the credential that makes legal and policy rooms treat you as a peer rather than as the language support. Highest return per hour on this entire page.",
         kind: "unconventional",
         horizon: "8 months–2 years, part-time",
       },
       {
-        title: "Route D — the full JD",
+        title: "The credential nobody told you about — certified legal translator or court interpreter",
         detail:
-          "Three years, full-time, expensive, and the strongest possible signal. Only rational if practising law is the actual goal rather than the credential. If the objective is access, Route C buys most of the benefit for a fraction of the cost.",
+          "This is the move that uses what you already have rather than starting over. Canada's courts and tribunals run in both official languages and are chronically short of certified French interpreters and legal translators. Certification through a provincial translators' association, or accreditation as a court interpreter, converts your existing skill into a regulated professional credential — one that puts you inside courtrooms, tribunals and ministries as a matter of routine. It is faster than any law programme, it pays, and it is a legitimate reason to be in the room rather than a reason to be admitted to it.",
+        kind: "unconventional",
+        horizon: "6–18 months",
+      },
+      {
+        title: "Add the legal register to the French practice",
+        detail:
+          "You already sell high-profile French preparation. Legal and diplomatic French is a distinct, higher-priced register with far fewer competent teachers — juridical terminology, contract language, court formality. Studying it serves the credibility objective and monetises immediately through the business. The study pays for itself, which is rare.",
+        kind: "unconventional",
+        horizon: "3–9 months",
+      },
+      {
+        title: "If you genuinely want to practise — Ontario paralegal licence",
+        detail:
+          "Ontario is the only province licensing paralegals as independent practitioners. Accredited programme, licensing exam, good character requirement. By a wide margin the fastest legitimate route to actually practising law within a defined scope. Only sensible if practising is the real goal.",
+        kind: "conventional",
+        horizon: "18 months–2 years",
+      },
+      {
+        title: "The JD, for completeness",
+        detail:
+          "Three years, full-time, expensive, and a full career change. Given that you already work inside AU and ministerial rooms, this buys you a different profession rather than better access to the one you have. Named so it is a decision rather than an omission.",
         kind: "conventional",
         horizon: "3 years",
       },
     ],
     firstAction:
-      "Answer one question — do you want to practise, or do you want the room? If the room: enrol in Queen's Introduction to Canadian Law; applications for the autumn intake open 1 June with registration in late July. If practise: request an NCA assessment and let its report tell you the actual gap instead of guessing at it.",
+      "Enrol in Queen's Introduction to Canadian Law — autumn applications open 1 June with registration in late July. In parallel, look up the certification requirements for legal translation and court interpreting in the province you are targeting: that is the credential that turns what you can already do into something regulated, paid and room-opening, and almost nobody in your position realises it exists.",
     sources: [
       {
         label: "Certifying internationally educated lawyers — Federation of Law Societies of Canada",
@@ -240,7 +296,7 @@ export const objectives: Objective[] = [
     outcome:
       "Standing membership in rooms where the other members are the reason you are there.",
     premise:
-      "Serious clubs are not bought, they are sponsored. Most require a proposer and a seconder who already belong and who are staking their own reputation on you. That makes this a two-year relationship project with a membership form at the end, not a decision you make on a Tuesday. Work the tiers in order — each one produces the sponsors for the next.",
+      "Serious clubs are not bought, they are sponsored — a proposer and a seconder who already belong stake their reputation on you. That makes this a two-year relationship project with a form at the end. You have an unusual shortcut though: clubs constantly need people to host, moderate and MC their events, and you do that professionally. Being useful to a club is the fastest route to being invited into one.",
     gates: [
       {
         label: "You need proposers before you need money",
@@ -260,9 +316,16 @@ export const objectives: Objective[] = [
       {
         title: "Tier 2 — professional bodies where you can hold office",
         detail:
-          "The Canadian International Council has chapters and is the natural home for the foreign policy objective. Sector associations, diaspora chambers of commerce and bilateral business councils all matter more than their websites suggest. The move is not to join — it is to take a committee seat nobody wants. Committee work is where sponsors are made.",
+          "The Canadian International Council has chapters and is the natural home for the foreign policy objective. Francophone chambers of commerce, Canada–Africa business councils and diaspora associations matter more than their websites suggest — and in those rooms your French and AU record make you immediately senior rather than a newcomer. Take the committee seat nobody wants; committee work is where sponsors are made.",
         kind: "unconventional",
         horizon: "3–12 months",
+      },
+      {
+        title: "Offer to MC their events — the shortcut you specifically have",
+        detail:
+          "Every club, chamber and association runs events and every one of them needs a competent bilingual host. Doing it once, well, for free, puts you in front of the entire membership in the most flattering possible position and makes the eventual proposer conversation trivial. Most candidates spend two years trying to get noticed; you can be the person at the podium within one event cycle.",
+        kind: "unconventional",
+        horizon: "1–6 months",
       },
       {
         title: "Tier 3 — athletic and social clubs with a real bar",
@@ -303,12 +366,18 @@ export const objectives: Objective[] = [
     outcome:
       "A standing invitation list where being included is worth something.",
     premise:
-      "Attending events makes you a guest. Hosting them makes you the reason the room exists — and the host is the only person in the room who is automatically connected to everyone else in it. This is the highest-leverage item on this entire page, it costs the least, and you can start in three weeks.",
+      "You already do this at the highest level — diplomatic galas, ministerial roundtables, continental forums — but always on someone else's mandate. The distinction that matters is between hosting as a service and convening on your own name. The MC is hired; the convener owns the room and the guest list. You have the entire skill set and none of the ownership, which makes this the shortest gap on the page.",
     gates: [
+      {
+        label: "Convene on your own name, not a client's",
+        detail:
+          "Hosting professionally builds someone else's institution. One dinner a month under your own name builds yours. Same skill, entirely different asset — and only one of them still belongs to you when the contract ends.",
+        blocking: false,
+      },
       {
         label: "Consistency beats production value",
         detail:
-          "A modest dinner on the first Thursday of every month beats a spectacular one-off every time. The value is in the recurrence, because that is what makes it a thing people plan around.",
+          "A modest dinner on the first Thursday of every month beats a spectacular one-off. You already know this from run-of-show work; the discipline transfers directly.",
         blocking: false,
       },
     ],
@@ -316,9 +385,16 @@ export const objectives: Objective[] = [
       {
         title: "The Jeffersonian dinner — one table, one conversation",
         detail:
-          "Eight to twelve people, phones away, one conversation at a time with no side chatter, and one question you pose at the start that everyone answers in turn. It manufactures the depth that a standing reception structurally cannot, and guests remember it for years. This is the format to build everything else around.",
+          "Eight to twelve people, phones away, one conversation at a time with no side chatter, and one question posed at the start that everyone answers in turn. It manufactures depth that a reception structurally cannot. You already know how to hold a room to a format; this is that skill applied to your own table.",
         kind: "unconventional",
         horizon: "Start within 3 weeks",
+      },
+      {
+        title: "Make it bilingual — the thing only you can convene",
+        detail:
+          "An anglophone-francophone table, run properly in both languages, is close to unique and immediately memorable. Nobody else in most Canadian cities can host it credibly. It is also the exact room where Canada–Africa business, diplomacy and diaspora interests overlap — which makes it useful to attend, not merely pleasant. This is your differentiated format; run it and it becomes known by your name.",
+        kind: "unconventional",
+        horizon: "From the first dinner",
       },
       {
         title: "Get the guest ratio right",
@@ -392,10 +468,10 @@ export const objectives: Objective[] = [
         kind: "unconventional",
         horizon: "2–4 years part-time",
       },
-      {
-        title: "Harvard Kennedy School Mid-Career MPA — the one aimed at your objective",
+        {
+        title: "Harvard Kennedy School Mid-Career MPA — and you already qualify",
         detail:
-          "Built for people with substantial professional experience, typically seven years or more, and it is the standard credential in senior public service and diplomatic circles worldwide. If the diplomatic ladder is the real goal, this is the programme that most directly serves it. One year, full-time, in residence.",
+          "Built for people with substantial professional experience, typically seven years or more. You have 7+ years across 12+ nations with African Union, GIZ and federal ministry work on the file — that is not a borderline application, it is the profile the programme is designed for, and the international development and public-sector angle is exactly what they select on. It is the standard credential in senior diplomatic circles worldwide. One year, full-time, in residence. If the diplomatic ladder is the real objective, this is the single most direct instrument on the page.",
         kind: "conventional",
         horizon: "1 year, apply 12–18 months ahead",
       },
@@ -415,7 +491,7 @@ export const objectives: Objective[] = [
       },
     ],
     firstAction:
-      "Decide which you are buying — the education or the alumni body. If it is the alumni body, start an Extension School course this term; admission is earned through performance in the courses themselves, so beginning is the application. If it is the diplomatic credential, put the Kennedy School Mid-Career MPA on an 18-month application clock.",
+      "You are already eligible for the Mid-Career MPA, which most people at this stage are not — put it on an 18-month application clock and start assembling recommenders from the AU and GIZ side of your work now, because those references are what will carry the file. If the cost or the year in residence is the obstacle, start an Extension School course this term instead: admission there is earned by performing in the courses themselves, so beginning is the application, and the alumni body is identical.",
     sources: [
       {
         label: "Harvard Extension Alumni Association — membership",
