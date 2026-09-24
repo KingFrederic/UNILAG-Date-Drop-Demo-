@@ -2,14 +2,22 @@
 
 import * as React from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Download, FileSpreadsheet } from "lucide-react";
+import {
+  ChevronDown,
+  Download,
+  FileSpreadsheet,
+  ListTree,
+} from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
+import { BookContents } from "@/components/playbook/book-contents";
 import {
   KDP_WORKBOOK,
   kdpCatalog,
   kdpDivisions,
   kdpTotals,
+  contentsSummary,
+  titlesWithContents,
 } from "@/data/kdp-catalog";
 import { count } from "@/lib/format";
 import { spring } from "@/lib/motion";
@@ -25,13 +33,20 @@ const DIVISION_TONE = {
  * The publishing catalogue behind the digital products stream.
  *
  * 200 titles is far too many to list flat, so categories collapse by default
- * and the division filter does the first cut. The source workbook is offered
+ * and the division filter does the first cut. Each title carries its table of
+ * contents one level deeper — same reason: an outline is worth reading for one
+ * book at a time, not for twenty books at once. The source workbook is offered
  * as a download because that is where the work actually gets tracked — this
  * view is for reading the plan, not for working it.
  */
 export function KdpCatalog() {
   const [division, setDivision] = React.useState<string | null>(null);
   const [openId, setOpenId] = React.useState<string | null>(null);
+  // Outlines open independently, keyed by category + book number, so a reader
+  // can hold two or three books' contents side by side and compare them.
+  const [openContents, setOpenContents] = React.useState<Set<string>>(
+    () => new Set(),
+  );
 
   const shown = React.useMemo(
     () =>
@@ -42,6 +57,16 @@ export function KdpCatalog() {
   );
 
   const shownTitles = shown.reduce((sum, c) => sum + c.titles.length, 0);
+  const shownOutlines = titlesWithContents(shown);
+
+  const toggleContents = React.useCallback((key: string) => {
+    setOpenContents((current) => {
+      const next = new Set(current);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  }, []);
 
   return (
     <GlassPanel className="p-6 sm:p-8">
@@ -191,24 +216,85 @@ export function KdpCatalog() {
                       </dl>
 
                       <ol className="space-y-1.5">
-                        {category.titles.map((title) => (
-                          <li
-                            key={title.n}
-                            className="flex gap-3 rounded-xl px-2.5 py-2 transition-colors hover:bg-white/6"
-                          >
-                            <span className="tabular mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-gold/12 text-[10px] font-semibold text-gold">
-                              {title.n}
-                            </span>
-                            <div className="min-w-0">
-                              <p className="text-[13px] font-medium leading-snug">
-                                {title.title}
-                              </p>
-                              <p className="text-[11px] leading-snug text-[var(--fg-faint)]">
-                                {title.strategy}
-                              </p>
-                            </div>
-                          </li>
-                        ))}
+                        {category.titles.map((title) => {
+                          const key = `${category.id}:${title.n}`;
+                          const expanded = openContents.has(key);
+                          const contentsId = `kdp-${key.replace(":", "-")}-contents`;
+
+                          return (
+                            <li
+                              key={title.n}
+                              className="rounded-xl px-2.5 py-2 transition-colors hover:bg-white/6"
+                            >
+                              <div className="flex gap-3">
+                                <span className="tabular mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-gold/12 text-[10px] font-semibold text-gold">
+                                  {title.n}
+                                </span>
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-[13px] font-medium leading-snug">
+                                    {title.title}
+                                  </p>
+                                  <p className="text-[11px] leading-snug text-[var(--fg-faint)]">
+                                    {title.strategy}
+                                  </p>
+                                </div>
+
+                                {/* A title whose outline hasn't landed
+                                    renders as it did before the wiring —
+                                    no dead toggle. */}
+                                {title.contents ? (
+                                  <button
+                                    type="button"
+                                    onClick={() => toggleContents(key)}
+                                    aria-expanded={expanded}
+                                    aria-controls={contentsId}
+                                    className={cn(
+                                      "inline-flex shrink-0 items-center gap-1.5 self-start rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors",
+                                      expanded
+                                        ? "border-gold/35 bg-gold/12 text-gold"
+                                        : "border-[var(--glass-border)] text-[var(--fg-muted)] hover:text-[var(--fg)]",
+                                    )}
+                                  >
+                                    <ListTree className="size-3" />
+                                    {contentsSummary(
+                                      category.division,
+                                      title.contents,
+                                    )}
+                                    <ChevronDown
+                                      className={cn(
+                                        "size-3 transition-transform",
+                                        expanded && "rotate-180",
+                                      )}
+                                    />
+                                  </button>
+                                ) : null}
+                              </div>
+
+                              <AnimatePresence initial={false}>
+                                {title.contents && expanded ? (
+                                  <motion.div
+                                    id={contentsId}
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: "auto", opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={spring.soft}
+                                    className="overflow-hidden"
+                                  >
+                                    {/* Indented to the title, not to the
+                                    number disc, so the outline reads as
+                                    the book's own. */}
+                                    <div className="ml-8 mt-2.5 rounded-r-lg border-l border-gold/25 bg-white/6 py-2.5 pl-3.5 pr-2.5 dark:bg-white/4">
+                                      <BookContents
+                                        division={category.division}
+                                        contents={title.contents}
+                                      />
+                                    </div>
+                                  </motion.div>
+                                ) : null}
+                              </AnimatePresence>
+                            </li>
+                          );
+                        })}
                       </ol>
                     </div>
                   </motion.div>
@@ -218,6 +304,19 @@ export function KdpCatalog() {
           );
         })}
       </ul>
+
+      {/* Outlines land title by title. Say so while it is true, and stop the
+          moment it isn't — this is a progress marker, not a permanent caveat. */}
+      {shownOutlines > 0 && shownOutlines < shownTitles ? (
+        <p className="mt-3 text-[11px] text-[var(--fg-faint)]">
+          Contents wired for{" "}
+          <span className="text-[var(--fg-muted)]">
+            {count(shownOutlines)} of {count(shownTitles)}
+          </span>{" "}
+          titles shown. A title with no outline yet opens to its strategy note
+          alone.
+        </p>
+      ) : null}
     </GlassPanel>
   );
 }

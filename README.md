@@ -145,6 +145,28 @@ page. `data/kdp-catalog.ts` is generated from
 `public/KDP_Catalog_Tracker.xlsx`; regenerate both together if the workbook
 changes.
 
+Each title can carry a `contents` block — the book's table of contents, wired
+under the title and opening one level deeper than the category, so an outline
+is read a book at a time. One shape serves all three divisions and the division
+only decides how it prints: fiction numbers its chapters, non-fiction carries
+on numbering across parts, low-content names its blocks and anchors them to a
+quantity (`40 puzzles`) instead of a page. Front and back matter stay
+unnumbered, because an answer key is not a chapter.
+
+```ts
+{ n: 1, title: "…", strategy: "…", contents: {
+    front: [{ title: "How to Use This Book", at: "2" }],
+    groups: [{ label: "Easy", note: "optional line under the heading",
+               items: [{ title: "40 puzzles", at: "6" }] }],
+    back: [{ title: "Answers", at: "266" }],
+} }
+```
+
+`label` and `note` on a group are optional — a fiction book with no parts is
+one unlabelled group of chapters. `at` is the right-hand anchor. Outlines arrive
+title by title, so while any are missing the panel says how many of the 200 are
+wired and a title without one simply renders its strategy note, as before.
+
 **The 20% assumption is stated, not buried.** It is well above the long-run
 market average of roughly 7–10%, and it is the number the whole plan is most
 sensitive to, so the blueprint shows what the same $3M pays at 7%, 10%, 15%
