@@ -4,18 +4,73 @@
  * Generated from KDP_Catalog_Tracker.xlsx, which ships alongside this file at
  * public/KDP_Catalog_Tracker.xlsx so the working spreadsheet and the rendered
  * plan never drift apart. Regenerate both together if the workbook changes.
+ *
+ * The workbook tracks one row per book, so it owns *status*; a book's table of
+ * contents is authored here, where the shape of the thing being written lives.
+ * The workbook has no outline column, so carry the `contents` blocks across
+ * whenever this file is regenerated — a naive rebuild would silently drop them.
  */
+
+export type CatalogDivision = "Fiction" | "Low-Content" | "Non-Fiction";
+
+/** One printed line of a book's table of contents. */
+export interface ContentsItem {
+  /** Chapter, section or interior block, worded as it will print. */
+  title: string;
+  /**
+   * Right-hand anchor. A page number where the book is laid out ("12"), or a
+   * quantity where the interior is counted rather than read ("40 puzzles",
+   * "12 weeks"). Omit when the book is too short to be navigated by page.
+   */
+  at?: string;
+}
+
+/** The level above items — a part, a book of a series, an interior block. */
+export interface ContentsGroup {
+  /** Printed heading. Omit for a book whose chapters run unbroken. */
+  label?: string;
+  /** One line under the heading: what the part is for, or how long it runs. */
+  note?: string;
+  items: ContentsItem[];
+}
+
+/**
+ * A book's table of contents.
+ *
+ * One shape for all three divisions, so an outline can be pasted in without
+ * first deciding which variant it belongs to. The division only decides how
+ * the same rows are numbered and headed — see CONTENTS_STYLE.
+ *
+ *   Fiction       front matter, chapters, back matter
+ *   Non-Fiction   front matter, parts with chapters inside, back matter
+ *   Low-Content   "how to use" matter, named interior blocks, index/answers
+ */
+export interface CatalogContents {
+  /** Unnumbered lead-in: introduction, note to the reader, how to use. */
+  front?: ContentsItem[];
+  /** The body of the book, in reading order. */
+  groups: ContentsGroup[];
+  /** Unnumbered tail: appendix, answers, also by, about the author. */
+  back?: ContentsItem[];
+}
 
 export interface CatalogTitle {
   n: number;
   title: string;
   strategy: string;
+  /**
+   * The book's table of contents, wired under the title in the catalogue.
+   * Optional while outlines land title by title: the catalogue renders what
+   * exists rather than padding a row with a placeholder, and the coverage
+   * line at the foot of the panel says how much of the 200 is actually done.
+   */
+  contents?: CatalogContents;
 }
 
 export interface CatalogCategory {
   id: string;
   category: string;
-  division: "Fiction" | "Low-Content" | "Non-Fiction";
+  division: CatalogDivision;
   effort: string;
   /** Why the category sells, from the tracker's own research column. */
   why: string;
@@ -475,8 +530,145 @@ export const kdpTotals = {
   titles: kdpCatalog.reduce((sum, category) => sum + category.titles.length, 0),
 };
 
-export const kdpDivisions = ["Fiction", "Low-Content", "Non-Fiction"] as const;
+export const kdpDivisions: CatalogDivision[] = [
+  "Fiction",
+  "Low-Content",
+  "Non-Fiction",
+];
 
 export function kdpByDivision(division: string) {
   return kdpCatalog.filter((category) => category.division === division);
 }
+
+/* ------------------------------ contents wiring ------------------------------ */
+
+export interface ContentsStyle {
+  /**
+   * "sequential" — one running number across the whole book, so a chapter
+   * inside Part Two carries on from the last chapter of Part One, which is
+   * how a reader expects a non-fiction contents page to behave.
+   * "none" — blocks are named, not numbered. An answer key is not chapter 9.
+   */
+  numbering: "sequential" | "none";
+  /** Word used to summarise the outline: "24 chapters", "9 sections". */
+  noun: string;
+  /** Heading word for a group that arrived without its own label. */
+  groupNoun: string;
+}
+
+/**
+ * What each division's contents look like once printed. Kept beside the data
+ * rather than in the component so the workbook, the outline text and the page
+ * all agree on what "chapter" means here.
+ */
+export const CONTENTS_STYLE: Record<CatalogDivision, ContentsStyle> = {
+  Fiction: { numbering: "sequential", noun: "chapters", groupNoun: "Part" },
+  "Non-Fiction": {
+    numbering: "sequential",
+    noun: "chapters",
+    groupNoun: "Part",
+  },
+  "Low-Content": {
+    numbering: "none",
+    noun: "sections",
+    groupNoun: "Section",
+  },
+};
+
+const GROUP_ORDINALS = [
+  "One",
+  "Two",
+  "Three",
+  "Four",
+  "Five",
+  "Six",
+  "Seven",
+  "Eight",
+  "Nine",
+  "Ten",
+];
+
+/** One flattened line of the printed contents, ready to render. */
+export type ContentsRow =
+  | { kind: "front"; item: ContentsItem }
+  | { kind: "group"; label: string; note?: string }
+  | { kind: "entry"; number: number | null; item: ContentsItem }
+  | { kind: "back"; item: ContentsItem };
+
+/**
+ * Turns the nested outline into the flat, in-order list of lines a contents
+ * page actually prints, with the division's numbering already applied.
+ *
+ * Numbering lives here rather than in JSX because it runs across groups: the
+ * fourth chapter of Part Two is chapter 11, and that is not something a map
+ * callback should be working out mid-render.
+ */
+export function flattenContents(
+  division: CatalogDivision,
+  contents: CatalogContents,
+): ContentsRow[] {
+  const style = CONTENTS_STYLE[division];
+  const rows: ContentsRow[] = [];
+
+  for (const item of contents.front ?? []) rows.push({ kind: "front", item });
+
+  let chapter = 0;
+  contents.groups.forEach((group, index) => {
+    // A single run of unlabelled chapters needs no heading above it; more than
+    // one group always gets one, or the reader can't tell where they are.
+    if (group.label || contents.groups.length > 1) {
+      const fallback = `${style.groupNoun} ${
+        GROUP_ORDINALS[index] ?? String(index + 1)
+      }`;
+      rows.push({ kind: "group", label: group.label ?? fallback, note: group.note });
+    }
+
+    for (const item of group.items) {
+      rows.push({
+        kind: "entry",
+        number: style.numbering === "sequential" ? ++chapter : null,
+        item,
+      });
+    }
+  });
+
+  for (const item of contents.back ?? []) rows.push({ kind: "back", item });
+
+  return rows;
+}
+
+/** Numbered body lines — the chapters or blocks proper, front/back excluded. */
+export function contentsEntries(contents?: CatalogContents): ContentsItem[] {
+  return contents ? contents.groups.flatMap((group) => group.items) : [];
+}
+
+/** Every printed line, front and back matter included. */
+export function contentsLines(contents?: CatalogContents): number {
+  if (!contents) return 0;
+  return (
+    (contents.front?.length ?? 0) +
+    contentsEntries(contents).length +
+    (contents.back?.length ?? 0)
+  );
+}
+
+/** "24 chapters" / "9 sections" — the summary shown on a title's toggle. */
+export function contentsSummary(
+  division: CatalogDivision,
+  contents?: CatalogContents,
+): string {
+  const entries = contentsEntries(contents);
+  return `${entries.length} ${CONTENTS_STYLE[division].noun}`;
+}
+
+/** Titles that already have an outline wired, across the given categories. */
+export function titlesWithContents(
+  categories: CatalogCategory[] = kdpCatalog,
+): number {
+  return categories.reduce(
+    (sum, category) =>
+      sum + category.titles.filter((title) => title.contents).length,
+    0,
+  );
+}
+
